@@ -6,3 +6,9 @@
 
 /* Large devices (large desktops, 1200px and up) */
 @media (min-width: @screen-lg-min) { ... }
+
+
+rsync -avP williamhuey@104.131.244.160:/var/www/104.131.244.160/htdocs/wp-content/themes/MilanEcom /home/williamhuey/Desktop/MilanSite/productionTheme/
+
+
+rsync -avP /home/bob/progtest/weight_worthy /media/bob/Pny-Attache-8gb
