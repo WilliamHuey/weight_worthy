@@ -1,7 +1,8 @@
 <template name="exercisesList">
   <select class="form-control">
   {{#each exercises}}
-    {{> exerciseItem}}
+    <option>{{> exerciseItem}}</option>
+    
   {{/each}}
   </select>  
 </template>
