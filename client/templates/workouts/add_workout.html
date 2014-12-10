@@ -1,18 +1,17 @@
 <template name="addWorkout">
   <h1>Add Workout</h1>
-  <div class="exercise-buttons"></div>
   <div class="exercise">
     <div class="line exercise-list">
-      <div class="col-md-2 col-md-offset-1">
-        <h2>Exercise</h2>
+      <div class="exercise-text col-md-3">
+        <div class="col-md-10 col-md-offset-1">
+          <h2 class="exercise-header">Exercise</h2>
+          <button class="btn btn-primary">+</button>
+        </div>
       </div>
-
       <div class="col-md-9 input-group">
         {{> exercisesList}}
       </div>
-    </div>
-    
-      {{> addSet}}
-    
+    </div>    
+    {{> addSet}}    
   </div>  
 </template>

@@ -35,6 +35,15 @@ h1, .h1, h2, .h2, h3, .h3 {
   padding: 0 0.5em;
 }
 
-.btn.add-set {
-    font-weight: 900;
+.btn {
+  font-weight: 900;
+}
+
+.exercise-header,
+.exercise-text h2 {
+  float: right;
+}
+
+.exercise-text button {
+  margin-top: 2em;
 }
