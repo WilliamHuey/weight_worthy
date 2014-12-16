@@ -5,3 +5,7 @@ Meteor.publish('notifications', function() {
 Meteor.publish('exercises', function() {
   return Exercises.find();
 });
+
+Meteor.publish('workouts', function() {
+  return Workouts.find({userId: this.userId});
+});
