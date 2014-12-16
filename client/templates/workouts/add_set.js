@@ -1,6 +1,9 @@
  Template.addWorkout.events({
-   'submit form': function(e, template) {
-    Blaze.render( Template.addSet , $(e.currentTarget).parent().parent().get(0) );
-    e.preventDefault();
+   'click .add-set': function(e, template) {
+     e.preventDefault();
+    Blaze.render(
+      Template.addSet,
+      $(e.target).parents('.sets').get(0)
+    );
   }
  });
