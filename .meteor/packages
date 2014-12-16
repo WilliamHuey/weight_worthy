@@ -10,4 +10,5 @@ ian:accounts-ui-bootstrap-3
 accounts-password
 iron:router
 stylus
+meteorhacks:subs-manager
 
