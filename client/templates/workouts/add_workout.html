@@ -1,9 +1,9 @@
 <template name="addWorkout">
   <h1>Add Workout</h1>
   {{> addWorkoutButtons}}
-  <div id="exercises-area">
-    {{> addWorkoutExercise}}
-  </div>
-  <div id="comments">
+  <div class="container">
+    <form id="exercises-area" role="form">
+      {{> addWorkoutExercise}}
+    </form>
   </div>
 </template>
