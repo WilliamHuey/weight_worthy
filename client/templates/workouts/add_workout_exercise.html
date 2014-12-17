@@ -1,5 +1,5 @@
 <template name="addWorkoutExercise">
-  <div class="row exercise rm-margin">
+  <div id="exercise-{{uniqueId}}" class="row exercise rm-margin">
     <div class="col-md-12">
       <div class="exercise-header form-group row">
         <h2 class="exercise-label float-left">Exercise</h2>
@@ -12,8 +12,9 @@
         {{> exercisesList}}
       </div>
       <div class="sets">
-        {{> addSet}}
+        {{> Template.dynamic template="addSet" data=addSetData }}
       </div>
+      
     </div>
   </div>
 </template>

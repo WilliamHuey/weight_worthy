@@ -1,10 +1,27 @@
+Template.addWorkoutExercise.created = function() {
+  var uniqId = (new Date()).getTime();
+  Template.addWorkoutExercise.helpers({
+    uniqueId: uniqId
+  });
+};
+
+Template.addWorkoutExercise.helpers({
+  addSetData: function() {
+    return {
+      uniqueId: (new Date()).getTime()
+    };
+  }
+});
+
 Template.addWorkoutExercise.events({
   'click .add-exercise': function(e) {
     e.preventDefault();
+   
     Blaze.render(
-      Template.addWorkoutExercise,
+      Template.addWorkoutExercise,      
       $('#exercises-area').get(0)
     );
+
   },
   
   'click .del-exercise': function(e) {

@@ -1,8 +1,24 @@
+Template.addSet.created = function() {
+};
+
+
+Template.addSet.helpers({
+  errorClass: function(field) {
+    return !!Session.get('addWorkoutErrors')[field] ? 'has-error' : '';
+  },
+  uniqueWeightId: function() {
+    return 'weight-' + this.uniqueId; 
+  }
+});
+
 Template.addSet.events({
   'click .add-set': function(e, template) {
     e.preventDefault();
-    Blaze.render(
+    Blaze.renderWithData(
       Template.addSet,
+      {
+        uniqueId: (new Date()).getTime()
+      },
       $(e.target).parents('.sets').get(0)
     );
   },
