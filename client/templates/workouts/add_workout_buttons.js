@@ -25,7 +25,7 @@ Template.addWorkoutButtons.events({
       Meteor.call('workoutInsert', exercises, function(error, result) {
         if (error)
           return alert(error.reason);
-        Router.go('/dashboard');
+        //Router.go('/dashboard');
       });
     });
   }

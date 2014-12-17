@@ -1,4 +1,4 @@
-Template.addWorkout.events({
+Template.addSet.events({
   'click .add-set': function(e, template) {
     e.preventDefault();
     Blaze.render(
