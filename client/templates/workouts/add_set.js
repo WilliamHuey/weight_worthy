@@ -1,13 +1,17 @@
-Template.addSet.created = function() {
-};
-
-
 Template.addSet.helpers({
   errorClass: function(field) {
-    return !!Session.get('addWorkoutErrors')[field] ? 'has-error' : '';
+    var addWorkoutErrors = Session.get('addWorkoutErrors');
+    return (typeof addWorkoutErrors !== 'undefined') &&
+      typeof addWorkoutErrors[field] !== 'undefined' &&
+      (addWorkoutErrors[field].length > 0) ? 'has-error' : '';
   },
   uniqueWeightId: function() {
     return 'weight-' + this.uniqueId; 
+  },
+  weightErrorMessages: function() {
+    var weightId = 'weight-' + this.uniqueId;
+    var messages = Session.get('addWorkoutErrors')[weightId];
+    return { errorMessages: messages };
   }
 });
 

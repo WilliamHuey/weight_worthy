@@ -4,6 +4,7 @@
       <div class="form-group {{errorClass uniqueWeightId}}">
         <label>Weight</label>
         <input id="{{uniqueWeightId}}" class="form-control weight" name="weight" type="text" />
+        {{> Template.dynamic template="errorMessages" data=weightErrorMessages}}
       </div>
       <div class="form-group">
         <label>Reps</label>
