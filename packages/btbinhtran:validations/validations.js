@@ -7,6 +7,7 @@ Val.validate = (function() {
   var inputData, againstValue, attr, attrRule, topLevelKey, secondLevelKey, dataType;
 
   //Determine which message type should be used
+  //These messages are in the negative because there are errors
   var validationMessage = {
     is: {
       notEmpty: function(inputData) {
@@ -20,6 +21,12 @@ Val.validate = (function() {
       },
       greaterThanEqualTo: function(inputData, againstValue) {
         return dataType + ' is not greater than or equal to ' + againstValue + '.';
+      },
+      lessThan: function(inputData, againstValue) {
+        return dataType + ' is not less than ' + againstValue + '.';
+      },
+      lessThanEqualTo: function(inputData, againstValue) {
+        return dataType + ' is not less than or equal to ' + againstValue + '.';
       },
       isTrue: function(inputData) {
         return dataType + ' is not a number.';
@@ -41,6 +48,12 @@ Val.validate = (function() {
       },
       greaterThanEqualTo: function(inputData, againstValue) {
         return inputData >= againstValue;
+      },
+      lessThan: function(inputData, againstValue) {
+        return inputData < againstValue;
+      },      
+      lessThanEqualTo: function(inputData, againstValue) {
+        return inputData <= againstValue;
       },
       isTrue: function(inputData) {
         return !!(/^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(inputData));
