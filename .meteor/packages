@@ -11,4 +11,5 @@ iron:router
 stylus
 meteorhacks:subs-manager
 underscore
+btbinhtran:validations
 
