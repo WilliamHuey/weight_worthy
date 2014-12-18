@@ -10,8 +10,13 @@ Template.addSet.helpers({
   },
   weightErrorMessages: function() {
     var weightId = 'weight-' + this.uniqueId;
-    var messages = Session.get('addWorkoutErrors')[weightId];
-    return { errorMessages: messages };
+    var errors = Session.get('addWorkoutErrors');
+    var errorObject = {};
+
+    if(typeof errors !== 'undefined') {
+      errorObject['errorMessages'] = errors[weightId];
+    }
+    return errorObject;
   }
 });
 
