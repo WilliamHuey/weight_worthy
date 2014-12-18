@@ -16,10 +16,10 @@ Val.validate = (function() {
     number: {
       //Generate the message for a specific attribute rule
       greaterThan: function(inputData, againstValue) {
-        return dataType + ' is not greater than ' + againstValue;
+        return dataType + ' is not greater than ' + againstValue + '.';
       },
       greaterThanEqualTo: function(inputData, againstValue) {
-        return dataType + ' is not greater than or equal to ' + againstValue;
+        return dataType + ' is not greater than or equal to ' + againstValue + '.';
       },
       isTrue: function(inputData) {
         return dataType + ' is not a number.';
