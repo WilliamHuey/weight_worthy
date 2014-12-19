@@ -25,7 +25,6 @@ Template.addWorkoutButtons.events({
           'reps': reps,
           'repsInputId': repsInputId
         };
-        console.log(set);
         exercise.sets.push(set);
       });
       exercises.push(exercise);
@@ -34,12 +33,14 @@ Template.addWorkoutButtons.events({
         exercises: exercises
       };
       var errors = validateWorkout(workout);
+      console.log(errors);
+
       if(_.keys(errors).length > 0) {
-        console.log('has errors');
+        throwError('Weight needs to be greater than 0.\nReps needs to be greater than 0.');
         return Session.set('addWorkoutErrors', errors);
       } else {
-        console.log('no errors');
-         Session.set('addWorkoutErrors', errors);
+        Errors.remove({});
+        Session.set('addWorkoutErrors', errors);
       }
       
       Meteor.call('workoutInsert', exercises, function(error, result) {

@@ -8,15 +8,8 @@ Template.addSet.helpers({
   uniqueWeightId: function() {
     return 'weight-' + this.uniqueId; 
   },
-  weightErrorMessages: function() {
-    var weightId = 'weight-' + this.uniqueId;
-    var errors = Session.get('addWorkoutErrors');
-    var errorObject = {};
-
-    if(typeof errors !== 'undefined') {
-      errorObject['errorMessages'] = errors[weightId];
-    }
-    return errorObject;
+  uniqueRepsId: function() {
+    return 'reps-' + this.uniqueId;
   }
 });
 
