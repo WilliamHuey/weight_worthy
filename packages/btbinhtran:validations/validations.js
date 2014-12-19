@@ -4,31 +4,31 @@ Val = {};
 Val.validate = (function() {  
 
   //Make these variables accessible to all functions inside validator
-  var inputData, againstValue, attr, attrRule, topLevelKey, secondLevelKey, dataType;
+  var inputData, againstValue, dataType;
 
   //Determine which message type should be used
   //These messages are in the negative because there are errors
   var validationMessage = {
     is: {
-      notEmpty: function(inputData) {
+      notEmpty: function() {
         return dataType + ' is empty.';
       }       
     },
     number: {
       //Generate the message for a specific attribute rule
-      greaterThan: function(inputData, againstValue) {
+      greaterThan: function() {
         return dataType + ' is not greater than ' + againstValue + '.';
       },
-      greaterThanEqualTo: function(inputData, againstValue) {
+      greaterThanEqualTo: function() {
         return dataType + ' is not greater than or equal to ' + againstValue + '.';
       },
-      lessThan: function(inputData, againstValue) {
+      lessThan: function() {
         return dataType + ' is not less than ' + againstValue + '.';
       },
-      lessThanEqualTo: function(inputData, againstValue) {
+      lessThanEqualTo: function() {
         return dataType + ' is not less than or equal to ' + againstValue + '.';
       },
-      isTrue: function(inputData) {
+      isTrue: function() {
         return dataType + ' is not a number.';
       }
     }
@@ -38,60 +38,57 @@ Val.validate = (function() {
   //Passed-in data are compared against the desired value (againstValue)
   var validationDefinitions = {
     is: {
-      notEmpty: function(inputData) {
+      notEmpty: function() {
         return !_.isEmpty(inputData);
       }      
     },
     number: {
-      greaterThan: function(inputData, againstValue) {
+      greaterThan: function() {
         return inputData > againstValue;
       },
-      greaterThanEqualTo: function(inputData, againstValue) {
+      greaterThanEqualTo: function() {
         return inputData >= againstValue;
       },
-      lessThan: function(inputData, againstValue) {
+      lessThan: function() {
         return inputData < againstValue;
       },      
-      lessThanEqualTo: function(inputData, againstValue) {
+      lessThanEqualTo: function() {
         return inputData <= againstValue;
       },
-      isTrue: function(inputData) {
+      isTrue: function() {
         return !!(/^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(inputData));
       }         
     }  
   };
 
   //Run the checks against the validation patterns
-  var validationCheck = function(passedCheck, inputData) {
+  var validationCheck = function(passedCheck, validatingType, validatingTypeAttr) {
     //Only generate a message value that was not validated
     if(!passedCheck) {
-      return validationMessage[topLevelKey][secondLevelKey](inputData, againstValue);
+      return validationMessage[validatingType][validatingTypeAttr]();
     }
   };
   
   //Starts off the validation
   return function() {
-    var args = arguments,
-    inputData = args[0],
-    attrRules = args[1];
-    
+    var args = arguments;
+    inputData = args[0];
+    validationCriteria = args[1];    
     dataType = args[2];        
     
-      var errorMsgArray = [];    
+      var errorMsgArray = [];
     
       //Iterate through the object and collect possible errors
-      for(var key in attrRules) {
-        topLevelKey = key;
-        for(var key2 in attrRules[key]) {
-          secondLevelKey = key2;
+      for(var validatingType in validationCriteria) {
+        for(var validatingTypeAttr in validationCriteria[validatingType]) {       
           //Some validations are compared against a value
           //Get this value in case there is one
-          againstValue = attrRules[key][key2];
+          againstValue = validationCriteria[validatingType][validatingTypeAttr];
                               
-          var valStatus = validationDefinitions[key][key2](inputData, againstValue);
+          var valStatus = validationDefinitions[validatingType][validatingTypeAttr]();
           
           //Validation check will generate a message
-          var valMsg = validationCheck(valStatus, inputData);
+          var valMsg = validationCheck(valStatus, validatingType, validatingTypeAttr);
           
           //Only push error objects when there are errors
           if(!valStatus) {
