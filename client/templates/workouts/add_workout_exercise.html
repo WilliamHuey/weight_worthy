@@ -9,10 +9,10 @@
         </div>
       </div>
       <div class="form-group">
-        {{> exercisesList}}
+        {{> Template.dynamic template="exercisesList" data=uniqueIdData}}
       </div>
       <div class="sets">
-        {{> Template.dynamic template="addSet" data=addSetData }}
+        {{> Template.dynamic template="addSet" data=uniqueIdData }}
       </div>
       
     </div>

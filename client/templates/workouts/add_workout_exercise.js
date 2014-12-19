@@ -6,7 +6,7 @@ Template.addWorkoutExercise.created = function() {
 };
 
 Template.addWorkoutExercise.helpers({
-  addSetData: function() {
+  uniqueIdData: function() {
     return {
       uniqueId: (new Date()).getTime()
     };

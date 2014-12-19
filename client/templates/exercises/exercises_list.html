@@ -1,10 +1,10 @@
 <template name="exercisesList">
-  
-    <select class="form-control">
+  <div class="form-group {{errorClass exerciseUniqueId}}">
+    <select id="{{exerciseUniqueId}}" class="form-control">
       <option value="">&nbsp;</option>
       {{#each exercises}}
         {{> exerciseItem}}
       {{/each}}
     </select>
-  
+  </div>
 </template>

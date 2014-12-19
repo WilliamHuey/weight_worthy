@@ -3,11 +3,13 @@ Template.addWorkoutButtons.events({
     e.preventDefault();
     var exercises = [];
     $('.exercise').each(function(exEle) {
-      var exId = $(this).find('select')
+      var exSelect = $(this).find('select');
+      var exId = exSelect
         .children('option:selected')
         .val();
       var exercise = {
         'exerciseId': exId,
+        'exerciseInputId': exSelect.attr('id'),
         'sets': []
       };
       var sets = $(this).find('.set');
