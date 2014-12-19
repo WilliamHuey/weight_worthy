@@ -38,7 +38,32 @@ Template.addWorkoutButtons.events({
       console.log(errors);
 
       if(_.keys(errors).length > 0) {
-        throwError('Weight needs to be greater than 0.\nReps needs to be greater than 0.');
+        var errorMessage = "";
+        var hasExerciseError = false;
+        var hasWeightError = false;
+        var hasRepsError = false;
+        for (var key in errors) {
+          if (key.lastIndexOf('exercise') === 0) {
+            hasExerciseError = true;
+          } else if(key.lastIndexOf('weight') === 0) {
+            hasWeightError = true;
+          } else if(key.lastIndexOf('reps') === 0) {
+            hasRepsError = true;
+          }
+        }
+
+        // Build error message
+        if(hasExerciseError) {
+          errorMessage += "Exercise cannot be blank.\n";
+        }
+        if(hasWeightError) {
+          errorMessage += "Weight cannot be blank.\n";
+        }
+        if(hasRepsError) {
+          errorMessage += "Reps has to be greater than 0.\n";
+        }
+
+        throwError(errorMessage);
         return Session.set('addWorkoutErrors', errors);
       } else {
         Errors.remove({});
