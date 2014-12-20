@@ -7,10 +7,13 @@
           <button class="add-exercise btn btn-primary">+</button>
           <button class="del-exercise btn btn-danger">-</button>
         </div>
+
+        <div class=" exercise-add-note float-right">
+          <button class="btn btn-primary" id="add-note">Note</button>
+        </div>
       </div>
-      <div class="form-group">
-        {{> Template.dynamic template="exercisesList" data=uniqueIdData}}
-      </div>
+      {{> Template.dynamic template="exercisesList" data=uniqueIdData}}
+ 
       <div class="sets">
         {{> Template.dynamic template="addSet" data=uniqueIdData }}
       </div>
