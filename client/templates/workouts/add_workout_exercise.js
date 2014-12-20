@@ -8,11 +8,16 @@ Template.addWorkoutExercise.events({
     );
 
   },
-  
   'click .del-exercise': function(e) {
     e.preventDefault();
     if ($('.exercise').size() > 1) {
       $(e.target).parents('.exercise').remove();  
     }
+  },
+  'click #add-note': function(e) {
+    e.preventDefault();
+    $(e.target).parents('div.exercise')
+      .find('div.notes')
+      .toggleClass('hidden');
   }
 });
