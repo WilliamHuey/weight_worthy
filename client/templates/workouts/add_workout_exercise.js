@@ -1,18 +1,3 @@
-Template.addWorkoutExercise.created = function() {
-  var uniqId = (new Date()).getTime();
-  Template.addWorkoutExercise.helpers({
-    uniqueId: uniqId
-  });
-};
-
-Template.addWorkoutExercise.helpers({
-  uniqueIdData: function() {
-    return {
-      uniqueId: (new Date()).getTime()
-    };
-  }
-});
-
 Template.addWorkoutExercise.events({
   'click .add-exercise': function(e) {
     e.preventDefault();

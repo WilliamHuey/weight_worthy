@@ -31,7 +31,10 @@ Template.addWorkoutButtons.events({
       });
       exercises.push(exercise);
       
+
+      var title = $("input[name=title]").val();
       var workout = {
+        title: title,
         exercises: exercises
       };
       var errors = validateWorkout(workout);
@@ -70,7 +73,7 @@ Template.addWorkoutButtons.events({
         Session.set('addWorkoutErrors', errors);
       }
       
-      Meteor.call('workoutInsert', exercises, function(error, result) {
+      Meteor.call('workoutInsert', workout, function(error, result) {
         if (error)
           return alert(error.reason);
         //Router.go('/dashboard');

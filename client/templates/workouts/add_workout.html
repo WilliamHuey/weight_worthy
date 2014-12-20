@@ -3,6 +3,10 @@
   {{> addWorkoutButtons}}
   <div class="workout container">
     <form id="exercises-area" role="form">
+      <div class="form-group">
+        <label>Title</label>
+        <input id="title-{{uniqueId}}" class="form-control title" name="title" type="text" />
+      </div>
       {{> addWorkoutExercise}}
     </form>
   </div>
