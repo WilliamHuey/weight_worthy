@@ -14,7 +14,10 @@
       <div class="sets">
         {{> Template.dynamic template="addSet" data=uniqueIdData }}
       </div>
-      
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <textarea id="notes-{{uniqueId}}" class="form-control notes" rows="4"></textarea>
+      </div>
     </div>
   </div>
 </template>

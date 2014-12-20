@@ -4,12 +4,15 @@ Template.addWorkoutButtons.events({
     var exercises = [];
     $('.exercise').each(function(exEle) {
       var exSelect = $(this).find('select');
+      var notes = $(this).find('textarea.notes').val();
+      // console.log(notes);
       var exId = exSelect
         .children('option:selected')
         .val();
       var exercise = {
         'exerciseId': exId,
         'exerciseInputId': exSelect.attr('id'),
+        'notes': notes,
         'sets': []
       };
       var sets = $(this).find('.set');
