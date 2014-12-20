@@ -1,5 +1,7 @@
 Template.errors.helpers({
   errors: function() {
-    return Errors.find();
+    return Messages.find({
+      type: 'error'
+    });
   }
 });

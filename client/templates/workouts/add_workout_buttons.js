@@ -38,7 +38,6 @@ Template.addWorkoutButtons.events({
         exercises: exercises
       };
       var errors = validateWorkout(workout);
-      console.log(errors);
 
       if(_.keys(errors).length > 0) {
         var errorMessage = "";
@@ -69,13 +68,14 @@ Template.addWorkoutButtons.events({
         throwError(errorMessage);
         return Session.set('addWorkoutErrors', errors);
       } else {
-        Errors.remove({});
+        Messages.remove({});
         Session.set('addWorkoutErrors', errors);
       }
       
       Meteor.call('workoutInsert', workout, function(error, result) {
         if (error)
           return alert(error.reason);
+        throwSuccess('Added a new workout!');
         //Router.go('/dashboard');
       });
     });
