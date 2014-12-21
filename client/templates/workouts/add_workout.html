@@ -1,12 +1,8 @@
 <template name="addWorkout">
   <h1>Add Workout</h1>
-  {{> addWorkoutButtons}}
+  {{> addTitleArea}}
   <div class="workout container">
-    <form id="exercises-area" role="form">
-      <div class="form-group">
-        <label>Title</label>
-        <input id="title-{{uniqueId}}" class="form-control title" name="title" type="text" />
-      </div>
+    <form id="exercises-area" role="form">      
       {{> addWorkoutExercise}}
     </form>
   </div>
