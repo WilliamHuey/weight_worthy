@@ -85,20 +85,15 @@ Template.addWorkoutButtons.events({
   },
   'click #mode-btn': function(e) {
     e.preventDefault();
+    
+    console.log(this);
     var button = $(e.target),
         glyphText = button.find('span.glyphicon');
     
-    if(button.hasClass('btn-primary')) {
-      button.removeClass('btn-primary');
-      button.addClass('btn-danger');
-      glyphText.removeClass('glyphicon-plus');
-      glyphText.addClass('glyphicon-minus');
-    } else {
-      button.removeClass('btn-danger');
-      button.addClass('btn-primary');
-      glyphText.removeClass('glyphicon-minus');
-      glyphText.addClass('glyphicon-plus');
-    }
+    button.toggleClass('btn-primary')
+          .toggleClass('btn-danger');
+    glyphText.toggleClass('glyphicon-plus')
+             .toggleClass('glyphicon-minus');
     
     $('.exercise-buttons')
       .children('button')
