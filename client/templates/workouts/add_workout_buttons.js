@@ -42,31 +42,35 @@ Template.addWorkoutButtons.events({
       exercises: exercises
     };
     var errors = validateWorkout(workout);
+    
+    var errMsgs = {
+      exercise: "Exercise cannot be blank.",
+      weight: "Weight has to be greater than 0.",
+      reps: "Reps has to be greater than 0."            
+    };
+    
+    var errPresent = {};
 
     if(_.keys(errors).length > 0) {
-      var errorMessage = "";
-      var hasExerciseError = false;
-      var hasWeightError = false;
-      var hasRepsError = false;
+      var errorMessage = "";  
+      
+      /* Errors
+      {
+        "exercise-11111": ['Exercise needs to be valid'],
+        "weight-2222": ['Weight cannot be blank'],
+        "weight-3333": ['Weight cannot be blank'],
+        "reps-555": ['Reps cannot be blank']
+      }
+      */      
+      
       for (var key in errors) {
-        if (key.lastIndexOf('exercise') === 0) {
-          hasExerciseError = true;
-        } else if(key.lastIndexOf('weight') === 0) {
-          hasWeightError = true;
-        } else if(key.lastIndexOf('reps') === 0) {
-          hasRepsError = true;
-        }
-      }
-
-      // Build error message
-      if(hasExerciseError) {
-        errorMessage += "Exercise cannot be blank.\n";
-      }
-      if(hasWeightError) {
-        errorMessage += "Weight has to be greater than 0.\n";
-      }
-      if(hasRepsError) {
-        errorMessage += "Reps has to be greater than 0.\n";
+        //ex. ['exercise', 1111]
+        var type = key.split('-')[0];
+        //Only concatenate once per error type
+        if(typeof errPresent[type] == 'undefined') {
+          errorMessage += errMsgs[type];
+          errPresent[type] = true;
+        }                
       }
 
       throwError(errorMessage);
