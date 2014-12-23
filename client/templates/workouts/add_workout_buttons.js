@@ -82,5 +82,28 @@ Template.addWorkoutButtons.events({
       throwSuccess('Added a new workout!');
       //Router.go('/dashboard');
     });
+  },
+  'click #mode-btn': function(e) {
+    e.preventDefault();
+    var button = $(e.target),
+        glyphText = button.find('span.glyphicon');
+    
+    if(button.hasClass('btn-primary')) {
+      button.removeClass('btn-primary');
+      button.addClass('btn-danger');
+      glyphText.removeClass('glyphicon-plus');
+      glyphText.addClass('glyphicon-minus');
+    } else {
+      button.removeClass('btn-danger');
+      button.addClass('btn-primary');
+      glyphText.removeClass('glyphicon-minus');
+      glyphText.addClass('glyphicon-plus');
+    }
+    
+    $('.exercise-buttons')
+      .children('button')
+      .toggleClass('hidden');
+
+    $('.set-btn').toggleClass('hidden');
   }
 });
