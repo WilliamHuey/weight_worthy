@@ -52,23 +52,14 @@ Template.addWorkoutButtons.events({
     var errPresent = {};
 
     if(_.keys(errors).length > 0) {
-      var errorMessage = "";  
-      
-      /* Errors
-      {
-        "exercise-11111": ['Exercise needs to be valid'],
-        "weight-2222": ['Weight cannot be blank'],
-        "weight-3333": ['Weight cannot be blank'],
-        "reps-555": ['Reps cannot be blank']
-      }
-      */      
+      var errorMessage = "";       
       
       for (var key in errors) {
         //ex. ['exercise', 1111]
         var type = key.split('-')[0];
         //Only concatenate once per error type
         if(typeof errPresent[type] == 'undefined') {
-          errorMessage += errMsgs[type];
+          errorMessage += errMsgs[type] + " ";
           errPresent[type] = true;
         }                
       }
@@ -89,8 +80,7 @@ Template.addWorkoutButtons.events({
   },
   'click #mode-btn': function(e) {
     e.preventDefault();
-    
-    console.log(this);
+
     var button = $(e.target),
         glyphText = button.find('span.glyphicon');
     
