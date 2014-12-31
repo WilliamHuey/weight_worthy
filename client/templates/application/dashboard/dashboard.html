@@ -1,10 +1,35 @@
 <template name="dashboard">
-  <div class="panel panel-default rm-margin">
-    <div class="panel-heading">
-      <h3 class="panel-title">Graph title</h3>
+<div id="dashboard-area">
+  <div class="panel panel-default row rm-margin">
+    <div class="panel-body col-md-2 row rm-margin">
+      <ul>
+        <li>
+          <a href="#">Profile</a>
+        </li>
+        <li>
+          <a href="#">
+            Workouts
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            Templates
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            Goals
+          </a>
+        </li>
+      </ul>
     </div>
-    <div class="panel-body">
-      <p>This is funny</p>
+    <div id="dashboard-content" class="panel panel-default col-md-10 row rm-margin no-paddings">
+      <div class="panel-heading">
+        Title
+      </div>
+      <p>Some content</p>
     </div>
   </div>
+  
+</div>
 </template>
