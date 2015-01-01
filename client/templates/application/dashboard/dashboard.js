@@ -5,7 +5,7 @@ Template.dashboard.rendered = function() {
     $('#dashboard-content').get(0)
   )  
 
-  $('#dashboard-heading').text('Workouts');
+  $('#dashboard-heading h1').text('Workouts');
 }
 
 Template.dashboard.events({
@@ -14,7 +14,7 @@ Template.dashboard.events({
 
     //Get dashboard tab text
     var tab = $.trim($(e.target).text()),
-    dbHeading = $('#dashboard-heading'),
+    dbHeading = $('#dashboard-heading h1'),
     dbContent = $('#dashboard-content');
 
     //Do not render the same tab content
