@@ -1,11 +1,11 @@
 Template.dashboard.rendered = function() {
 
   Blaze.render(
-    Template.profile,
+    Template.workouts,
     $('#dashboard-content').get(0)
   )  
 
-  $('#dashboard-heading').text('Profile');
+  $('#dashboard-heading').text('Workouts');
 }
 
 Template.dashboard.events({
