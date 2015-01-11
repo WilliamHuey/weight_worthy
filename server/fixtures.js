@@ -29,9 +29,9 @@ if(SampleWorkoutData.find().count() === 0) {
          notes:"",
          sets:[
             {
-               weight:"5",
+               weight:"15",
                weightInputId:"weight-1420062721054",
-               reps:"2",
+               reps:"3",
                repsInputId:"reps-1420062721054"
             }
          ]
@@ -56,12 +56,12 @@ if(SampleWorkoutData.find().count() === 0) {
    title:"Workout - Wed Jan 01 2014 15:30:19 GMT-0800 (PST)",
    exercises:[
       {
-         exerciseId:"jhmQbdqAbwryX4zFb",
+         exerciseId:"akmLbcqZbwwyQ4zGb",
          exerciseInputId:"exercise-1420062818479",
          notes:"",
          sets:[
             {
-               weight:"7",
+               weight:"30",
                weightInputId:"weight-1420062721054",
                reps:"20",
                repsInputId:"reps-1420062721054"
@@ -69,14 +69,14 @@ if(SampleWorkoutData.find().count() === 0) {
          ]
       },
       {
-         exerciseId:"ocP5BpFaps5Q2gBpM",
+         exerciseId:"vrA3BpButs9M7gLpP",
          exerciseInputId:"exercise-1420062876084",
          notes:"",
          sets:[
             {
-               weight:"40",
+               weight:"50",
                weightInputId:"weight-1420062878358",
-               reps:"10",
+               reps:"15",
                repsInputId:"reps-1420062878358"
             }
          ]
