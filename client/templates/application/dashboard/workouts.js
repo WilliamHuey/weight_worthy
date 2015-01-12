@@ -77,27 +77,63 @@ for(var workouts in samp) {
     ])
     .range([0, chartHeight]);
 
-      var groups = svg.selectAll("g")
-        .data(parsedSamp)
-        .enter()
-        .append("g")
-        .style("fill", function(d, i) {
-          return colors(i);
-        });
+  var groups = svg.selectAll("g")
+    .data(parsedSamp)
+    .enter()
+    .append("g")
+    .style("fill", function(d, i) {
+      return colors(i);
+  });
 
   var rects = groups.selectAll("rect")
     .data(function(d) { return d; })
     .enter()
     .append("rect")
     .attr("x", function(d, i) {
-              return xScale(i);
+      return xScale(i);
+    })
+    .attr("y", function(d) {
+      return chartHeight - yScale(d.y0) - yScale(d.y);
+    })
+    .attr("height", function(d) {
+      return yScale(d.y);
+    })
+    .attr("width", xScale.rangeBand());
+      
+    svg
+      .append("g")
+      .attr("class", 'weight')
+      .style("fill", "rgb(255,255,255)")
+      .selectAll("text")
+      .data(parsedSamp[0])
+      .enter()
+      .append("text")
+      .text(function(d) {
+        return 'Weight: ' + d.weight;
+      })
+      .attr("x", function(d, i) {
+        return xScale(i);
       })
       .attr("y", function(d) {
-        return -yScale(d.y0) - yScale(d.y) + chartHeight;
+        return chartHeight;
+      });
+
+     svg
+      .append("g")
+      .attr("class", 'reps')
+      .style("fill", "rgb(255,255,255)")
+      .selectAll("text")
+      .data(parsedSamp[1])
+      .enter()
+      .append("text")
+      .text(function(d) {
+        return 'Reps: ' + d.reps;
       })
-      .attr("height", function(d) {
-        return yScale(d.y);
+      .attr("x", function(d, i) {
+        return xScale(i) + 75;
       })
-      .attr("width", xScale.rangeBand());
+      .attr("y", function(d) {
+        return chartHeight ;
+      });
 
 }
