@@ -26,7 +26,9 @@ Template.addSet.events({
   },
   'click .del-set': function(e) {
     e.preventDefault();
-    if($('.set').size() > 1) {
+
+    //Only allow removal if more than one set present
+    if($(e.target).parents('.sets').children().length > 1) {
       $(e.target).parents('.set').remove();
     }
   }
