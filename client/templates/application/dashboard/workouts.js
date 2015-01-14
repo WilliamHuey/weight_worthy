@@ -1,6 +1,6 @@
 Template.workouts.rendered = function() {
 
-var samp = SampleWorkoutData.find().fetch();
+var samp = Workouts.find({ userId: Meteor.userId() }).fetch();
 
 var parsedSamp = [[], []],
   setCount = 0;
@@ -135,5 +135,11 @@ for(var workouts in samp) {
       .attr("y", function(d) {
         return chartHeight ;
       });
+
+    svg.append("g")
+      .call(d3.svg.axis()
+      .scale(xScale)
+      .orient("bottom"));
+
 
 }
