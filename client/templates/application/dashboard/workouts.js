@@ -1,7 +1,18 @@
-Template.workouts.rendered = function() {
+Workouts.find({ userId: Meteor.userId() }).observe({
+  added: function(doc) {
+    $('#chart').empty();
+    Template.workouts.rendered();
+  },
+  removed: function(doc) {
+    $('#chart').empty();
+    Template.workouts.rendered();
+  }
+});
+  
 
-var samp = Workouts.find({ userId: Meteor.userId() }).fetch();
-
+Template.workouts.rendered = function() {  
+var samp  = Workouts.find({ userId: Meteor.userId() }).fetch();
+  
 var parsedSamp = [[], []],
   setCount = 0;
 
@@ -13,7 +24,7 @@ for(var workouts in samp) {
     }
     if(typeof workout[exercises] == 'object') {
       var exercise = workout[exercises];
-      //console.log()
+      
       for(var sets in exercise) {
         if(typeof exercise[sets] == 'object') {
           var set = exercise[sets];
@@ -53,7 +64,7 @@ for(var workouts in samp) {
 
   var $chart = $('#chart');
 
-  chartWidth = $chart.width(),
+  var chartWidth = $chart.width(),
   chartHeight = $chart.height();
 
   var stack = d3.layout.stack();
@@ -142,4 +153,4 @@ for(var workouts in samp) {
       .orient("bottom"));
 
 
-}
+};
