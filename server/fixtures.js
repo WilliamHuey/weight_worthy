@@ -52,13 +52,15 @@ if(Meteor.users.find({ username: username }).count() == 0) {
         repsInputId: "reps-1420062778358"
       }]
     }],
-     createdAt: new Date("2015-01-14T06:12:46.336Z") ,     
+     createdAt: new Date("2015-01-13T06:12:46.336Z") ,     
      _id: "EqSnyb2DyLomYhcgz"  
   });
 
+    
+
   Workouts.insert({
     userId: userId,
-    title: "Workout - Fri Jan 16 2014 22:12:46 GMT-0800 (PST)",
+    title: "Workout - Fri Jan 15 2015 22:12:46 GMT-0800 (PST)",
     exercises: [{
       exerciseId: "akmLbcqZbwwyQ4zGb",
       exerciseInputId: "exercise-1420062818479",
@@ -69,21 +71,30 @@ if(Meteor.users.find({ username: username }).count() == 0) {
         reps: "20",
         repsInputId: "reps-1420062721054"
       }]
-    }, {
-      exerciseId: "vrA3BpButs9M7gLpP",
-      exerciseInputId: "exercise-1420062876084",
+    }],
+    createdAt: new Date("2015-01-15T06:12:46.336Z"),
+     _id: "ZaJct272LxUkM2Low"
+  });
+
+  Workouts.insert({
+    userId: userId,
+    title: "Workout - Fri Jan 16 2015 22:12:46 GMT-0800 (PST)",
+    exercises: [{
+      exerciseId: "akmLbcqZbwwyQ4zGb",
+      exerciseInputId: "exercise-1420062818479",
       notes: "",
       sets: [{
-        weight: "50",
-        weightInputId: "weight-1420062878358",
-        reps: "15",
-        repsInputId: "reps-1420062878358"
+        weight: "45",
+        weightInputId: "weight-1420062721054",
+        reps: "14",
+        repsInputId: "reps-1420062721054"
       }]
     }],
-    createdAt: new Date("2015-01-14T06:12:46.336Z"),
+    createdAt: new Date("2015-01-16T06:12:46.336Z"),
      _id: "Baact895HxJkM3Lpc"
   });
 
 }  
+
 
 
