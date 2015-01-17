@@ -1,30 +1,16 @@
-// Workouts.find({
-//   userId: Meteor.userId()
-// }).observe({
-//   added: function(doc) {
-//     $('#chart').empty();
-//     Template.workouts.rendered();
-//   },
-//   removed: function(doc) {
-//     $('#chart').empty();
-//     Template.workouts.rendered();
-//   }
-// });
-
-
 Template.workouts.rendered = function() {
-  var samp = Workouts.find({
+  var rawWorkoutData = Workouts.find({
     userId: Meteor.userId()
   }).fetch();
 
-  var parsedSamp = [
+  var dataSet = [
       [],
       []
     ],
     setCount = 0;
 
-  for (var workouts in samp) {
-    var workout = samp[workouts];
+  for (var workouts in rawWorkoutData) {
+    var workout = rawWorkoutData[workouts];
     for (var exercises in workout) {
       if (exercises == 'title') {
         var title = workout[exercises];
@@ -57,8 +43,8 @@ Template.workouts.rendered = function() {
                     exerciseId: exerciseId,
                     reps: details.reps
                   }
-                  parsedSamp[0].push(item1);
-                  parsedSamp[1].push(item2);
+                  dataSet[0].push(item1);
+                  dataSet[1].push(item2);
                   setCount++;
                 }
               }
@@ -69,23 +55,19 @@ Template.workouts.rendered = function() {
     }
   }
 
-  var $chart = $('#chart');
+  var $chart = $('#chart'),
+    chartWidth = $chart.width(),
+    chartHeight = $chart.height(),
+    stack = d3.layout.stack(),
+    colors = d3.scale.category10();
 
-  var chartWidth = $chart.width(),
-    chartHeight = $chart.height();
-
-  var stack = d3.layout.stack();
-  stack(parsedSamp);
-
-  console.log(JSON.stringify(parsedSamp));
+  stack(dataSet);
 
   var svg = d3.select("#chart").append("svg");
 
-  var colors = d3.scale.category10();
-
   var yScale = d3.scale.linear()
     .domain([0,
-      d3.max(parsedSamp, function(d) {
+      d3.max(dataSet, function(d) {
         return d3.max(d, function(d) {
           return d.y0 + d.y;
         });
@@ -93,31 +75,23 @@ Template.workouts.rendered = function() {
     ])
     .range([0, chartHeight]);
 
-
-  //Time axis
-
-  var data = [{
-    "date": "2015-01-11"
+  //Beginning date range
+  var dateRange = [{
+    "date": "2015-01-12"
   }, {
-    "date": "2015-01-17"
+    "date": "2015-01-18"
   }];
 
   var margin = {
-      top: 40,
-      right: 40,
-      bottom: 40,
-      left: 40
-    },
-    width = chartWidth,
-    height = chartHeight;
+    top: 40,
+    right: 40,
+    bottom: 40,
+    left: 40
+  };
 
-    var xScale = d3.time.scale()
-    .domain([new Date(data[0].date), d3.time.day.offset(new Date(data[data.length - 1].date), 1)])
-    .rangeRound([0, width - margin.left - margin.right]);
-
-  var x = d3.time.scale()
-    .domain([new Date(data[0].date), d3.time.day.offset(new Date(data[data.length - 1].date), 1)])
-    .rangeRound([0, width - margin.left - margin.right]);
+  var xScale = d3.time.scale()
+    .domain([new Date(dateRange[0].date), d3.time.day.offset(new Date(dateRange[dateRange.length - 1].date), 1)])
+    .rangeRound([0, chartWidth]);
 
   var xAxis = d3.svg.axis()
     .scale(xScale)
@@ -128,12 +102,22 @@ Template.workouts.rendered = function() {
     .tickPadding(8);
 
   var groups = svg.selectAll("g")
-    .data(parsedSamp)
+    .data(dataSet)
     .enter()
     .append("g")
     .style("fill", function(d, i) {
       return colors(i);
     });
+
+  var xDateAxis = svg.append('g')
+    .attr('class', 'x axis')
+    .attr('width', chartWidth)
+    .call(xAxis);
+
+  var dateAxisLabelCount = xDateAxis[0][0]
+    .textContent.split(" ").length - 1;
+
+  var xDateSpace = Math.floor(chartWidth / dateAxisLabelCount);
 
   var rects = groups.selectAll("rect")
     .data(function(d) {
@@ -142,11 +126,7 @@ Template.workouts.rendered = function() {
     .enter()
     .append("rect")
     .attr("x", function(d, i) {
-      var nDate = (new Date(d.title.split(" - ")[1]));
-      //console.log(nDate);
-      var xRet = xScale(nDate);
-      //console.log(xRet);
-      return xRet;
+      return xScale(new Date(d.title.split(" - ")[1])) - xDateSpace;
     })
     .attr("y", function(d) {
       return chartHeight - yScale(d.y0) - yScale(d.y);
@@ -161,7 +141,7 @@ Template.workouts.rendered = function() {
     .attr("class", 'weight')
     .style("fill", "rgb(255,255,255)")
     .selectAll("text")
-    .data(parsedSamp[0])
+    .data(dataSet[0])
     .enter()
     .append("text")
     .text(function(d) {
@@ -179,7 +159,7 @@ Template.workouts.rendered = function() {
     .attr("class", 'reps')
     .style("fill", "rgb(255,255,255)")
     .selectAll("text")
-    .data(parsedSamp[1])
+    .data(dataSet[1])
     .enter()
     .append("text")
     .text(function(d) {
@@ -191,12 +171,6 @@ Template.workouts.rendered = function() {
     .attr("y", function(d) {
       return chartHeight;
     });
-
-
-  svg.append('g')
-    .attr('class', 'x axis')
-    .attr('width', width)
-    .call(xAxis);
 
 
 };
