@@ -11,7 +11,8 @@ Template.workouts.rendered = function() {
   
   var startDate = null,
       endDate = null,
-      dates = [];
+      dates = [],
+      datesForXAxis = [];
   
   //console.log('raw data ', rawWorkoutData);  
 
@@ -22,8 +23,10 @@ Template.workouts.rendered = function() {
     var createdAt = workout.createdAt._i ? 
         new Date(workout.createdAt._i) : workout.createdAt;
     //var createdAt = new Date(workout.createdAt._i);
+    //console.log('created at ', workout.createdAt);
     
     dates.push(createdAt);
+    
     if(!startDate || createdAt < startDate)
       startDate = createdAt;
     
@@ -71,6 +74,7 @@ Template.workouts.rendered = function() {
                   };
                   dataSet[0].push(item1);
                   dataSet[1].push(item2);
+                  datesForXAxis.push(createdAt);
                   //console.log('item 1 is ', item1);
                   //console.log('2item  is ', item2);
                   setCount++;
@@ -89,9 +93,9 @@ Template.workouts.rendered = function() {
 
   var $chart = $('#chart'),
     totalWidth = $chart.width()
-    chartWidth = totalWidth - margin.right,
+    chartWidth = totalWidth,
     totalHeight = $chart.height(),
-    chartHeight = totalHeight - margin.top - margin.bottom ,
+    chartHeight = totalHeight,
     stack = d3.layout.stack(),
     colors = d3.scale.category10();
 
@@ -99,11 +103,11 @@ Template.workouts.rendered = function() {
   
   //console.log('dataset ', JSON.stringify(dataSet));
 
-  var svg = d3.select("#chart").append("svg")  
-  .append("g")
-  .attr("transform", "translate(" + (margin.left + margin.right) + "," + margin.top + ")")
-  .attr("width", chartWidth )
-  .attr("height", chartHeight )
+  //console.log('datesForXAxis ', datesForXAxis);
+
+  var svg = d3.select("#chart").append("svg")   
+  .attr("width", totalWidth)
+  .attr("height", totalHeight)
 
   var yScale = d3.scale.linear()
     .domain([0,
@@ -121,9 +125,11 @@ Template.workouts.rendered = function() {
   //console.log("endDate:", endDate);
   //console.log(dates);
 
+  var xTicks = [ d3.time.day.offset(dates[0], - 2),
+             d3.time.day.offset(dates[dates.length - 1], 1)];
+  //console.log('xticks ', xTicks);
   var xScale = d3.time.scale()
-    .domain([ d3.time.day.offset(dates[0], - 2),
-             d3.time.day.offset(dates[dates.length - 1], 1)])
+    .domain(xTicks)
     .rangeRound([0, chartWidth]);
   
   //console.log('xscale ', xScale);
@@ -132,12 +138,13 @@ Template.workouts.rendered = function() {
     .scale(xScale)
     .orient('bottom')
     .ticks(d3.time.days, 1)
+    .tickValues(datesForXAxis)
     .tickFormat(d3.time.format('%a %d'))
     .tickSize(0)
-    .tickPadding(8);
-
+    .tickPadding(8)
   
   var groups = svg.selectAll("g")
+    .attr('class', 'groups')    
     .data(dataSet)
     .enter()
     .append("g")
@@ -146,10 +153,8 @@ Template.workouts.rendered = function() {
     });
 
   var xDateAxis = svg.append('g')
-    .attr('class', 'x axis')
-    .attr('width', chartWidth)
-    .call(xAxis);
-
+    .attr('class', 'x axis') 
+    .call(xAxis) 
 
   var rects = groups.selectAll("rect")
     .data(function(d) {
@@ -169,8 +174,6 @@ Template.workouts.rendered = function() {
       return yScale(d.y);
     })
     .attr("width", 30);
-
-
 
  
 
