@@ -10,6 +10,7 @@ Template.addWorkoutButtons.events({
         .children('option:selected')
         .val();
       var exercise = {
+        'createdAt': moment()._d,
         'exerciseId': exId,
         'exerciseInputId': exSelect.attr('id'),
         'notes': notes,

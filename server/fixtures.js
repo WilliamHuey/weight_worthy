@@ -20,7 +20,9 @@ if (Exercises.find().count() === 0) {
 
 var username = password = "anewone";
 if(Meteor.users.find({ username: username }).count() == 0) {
-
+  
+  var workoutExercises = Exercises.find({}, { limit: 4 }).fetch();  
+  
   var userId = Accounts.createUser({
     username: username,
     email: username + "@" + username + ".com"
@@ -32,7 +34,7 @@ if(Meteor.users.find({ username: username }).count() == 0) {
     userId: userId,
     title: "Workout - Tue Jan 13 2015 22:12:46 GMT-0800 (PST)",
     exercises: [{
-      exerciseId: "jhmQbdqAbwryX4zFb",
+      exerciseId: workoutExercises[0]._id,
       exerciseInputId: "exercise-1420062718479",
       notes: "",
       sets: [{
@@ -42,7 +44,7 @@ if(Meteor.users.find({ username: username }).count() == 0) {
         repsInputId: "reps-1420062721054"
       }]
     }, {
-      exerciseId: "ocP5BpFaps5Q2gBpM",
+      exerciseId: workoutExercises[1]._id,
       exerciseInputId: "exercise-1420062776084",
       notes: "",
       sets: [{
@@ -52,8 +54,7 @@ if(Meteor.users.find({ username: username }).count() == 0) {
         repsInputId: "reps-1420062778358"
       }]
     }],
-     createdAt: new Date("2015-01-13T06:12:46.336Z") ,     
-     _id: "EqSnyb2DyLomYhcgz"  
+    createdAt: moment("2015-01-13T06:12:46.336")
   });
 
     
@@ -62,7 +63,7 @@ if(Meteor.users.find({ username: username }).count() == 0) {
     userId: userId,
     title: "Workout - Fri Jan 15 2015 22:12:46 GMT-0800 (PST)",
     exercises: [{
-      exerciseId: "akmLbcqZbwwyQ4zGb",
+      exerciseId: workoutExercises[2]._id,
       exerciseInputId: "exercise-1420062818479",
       notes: "",
       sets: [{
@@ -72,15 +73,14 @@ if(Meteor.users.find({ username: username }).count() == 0) {
         repsInputId: "reps-1420062721054"
       }]
     }],
-    createdAt: new Date("2015-01-15T06:12:46.336Z"),
-     _id: "ZaJct272LxUkM2Low"
+    createdAt: moment("2015-01-15T06:12:46.336")
   });
 
   Workouts.insert({
     userId: userId,
     title: "Workout - Fri Jan 16 2015 22:12:46 GMT-0800 (PST)",
     exercises: [{
-      exerciseId: "akmLbcqZbwwyQ4zGb",
+      exerciseId: workoutExercises[3]._id,
       exerciseInputId: "exercise-1420062818479",
       notes: "",
       sets: [{
@@ -90,10 +90,8 @@ if(Meteor.users.find({ username: username }).count() == 0) {
         repsInputId: "reps-1420062721054"
       }]
     }],
-    createdAt: new Date("2015-01-16T06:12:46.336Z"),
-     _id: "Baact895HxJkM3Lpc"
+    createdAt: moment("2015-01-16T06:12:46.336")
   });
-
 }  
 
 

@@ -8,15 +8,36 @@ Template.workouts.rendered = function() {
       []
     ],
     setCount = 0;
+  
+  var startDate = null,
+      endDate = null,
+      dates = [];
+  
+  //console.log('raw data ', rawWorkoutData);  
 
   for (var workouts in rawWorkoutData) {
-    var workout = rawWorkoutData[workouts];
+    var workout = rawWorkoutData[workouts];        
+    //console.log('ca ', workout.createdAt);
+    //if(workout.createdAt._i || workout.createdAt)
+    var createdAt = workout.createdAt._i ? 
+        new Date(workout.createdAt._i) : workout.createdAt;
+    //var createdAt = new Date(workout.createdAt._i);
+    
+    dates.push(createdAt);
+    if(!startDate || createdAt < startDate)
+      startDate = createdAt;
+    
+    if(!endDate || createdAt > endDate)
+      endDate = createdAt;
+    
     for (var exercises in workout) {
       if (exercises == 'title') {
         var title = workout[exercises];
       }
-      if (typeof workout[exercises] == 'object') {
+      if (typeof workout[exercises] == 'object' && 
+          workout[exercises].length > 0) {
         var exercise = workout[exercises];
+        //console.log('exercise is ', exercise);
 
         for (var sets in exercise) {
           if (typeof exercise[sets] == 'object') {
@@ -29,22 +50,29 @@ Template.workouts.rendered = function() {
                 var entryDetails = set[setInfo];
                 for (var entryDetail in entryDetails) {
                   var details = entryDetails[entryDetail];
+                  //console.log('details weight ', details.weight);
+                  //console.log('created at ', workout.createdAt._i);
+                  //console.log('title ', title);
                   var item1 = {
                     x: setCount,
                     y: details.weight,
                     title: title,
                     exerciseId: exerciseId,
-                    weight: details.weight
-                  }
+                    weight: details.weight,
+                    createdAt: createdAt
+                  };
                   var item2 = {
                     x: setCount,
                     y: details.reps,
                     title: title,
                     exerciseId: exerciseId,
-                    reps: details.reps
-                  }
+                    reps: details.reps,
+                    createdAt: createdAt
+                  };
                   dataSet[0].push(item1);
                   dataSet[1].push(item2);
+                  //console.log('item 1 is ', item1);
+                  //console.log('2item  is ', item2);
                   setCount++;
                 }
               }
@@ -54,6 +82,8 @@ Template.workouts.rendered = function() {
       }
     }
   }
+  
+  //console.log(dates);
 
   var $chart = $('#chart'),
     chartWidth = $chart.width(),
@@ -62,6 +92,8 @@ Template.workouts.rendered = function() {
     colors = d3.scale.category10();
 
   stack(dataSet);
+  
+  //console.log('dataset ', JSON.stringify(dataSet));
 
   var svg = d3.select("#chart").append("svg");
 
@@ -69,6 +101,7 @@ Template.workouts.rendered = function() {
     .domain([0,
       d3.max(dataSet, function(d) {
         return d3.max(d, function(d) {
+           //console.log('d y ' +  d.y0 + " , dy " + d.y);
           return d.y0 + d.y;
         });
       })
@@ -76,22 +109,15 @@ Template.workouts.rendered = function() {
     .range([0, chartHeight]);
 
   //Beginning date range
-  var dateRange = [{
-    "date": "2015-01-12"
-  }, {
-    "date": "2015-01-18"
-  }];
-
-  var margin = {
-    top: 40,
-    right: 40,
-    bottom: 40,
-    left: 40
-  };
+  //console.log("startDate:", startDate);
+  //console.log("endDate:", endDate);
+  //console.log(dates);
 
   var xScale = d3.time.scale()
-    .domain([new Date(dateRange[0].date), d3.time.day.offset(new Date(dateRange[dateRange.length - 1].date), 1)])
+    .domain([dates[0], d3.time.day.offset(dates[dates.length - 1], 1)])
     .rangeRound([0, chartWidth]);
+  
+  //console.log('xscale ', xScale);
 
   var xAxis = d3.svg.axis()
     .scale(xScale)
@@ -101,6 +127,7 @@ Template.workouts.rendered = function() {
     .tickSize(0)
     .tickPadding(8);
 
+  
   var groups = svg.selectAll("g")
     .data(dataSet)
     .enter()
@@ -114,10 +141,6 @@ Template.workouts.rendered = function() {
     .attr('width', chartWidth)
     .call(xAxis);
 
-  var dateAxisLabelCount = xDateAxis[0][0]
-    .textContent.split(" ").length - 1;
-
-  var xDateSpace = Math.floor(chartWidth / dateAxisLabelCount);
 
   var rects = groups.selectAll("rect")
     .data(function(d) {
@@ -126,51 +149,54 @@ Template.workouts.rendered = function() {
     .enter()
     .append("rect")
     .attr("x", function(d, i) {
-      return xScale(new Date(d.title.split(" - ")[1])) - xDateSpace;
+      //console.log('d is ', d);
+      return xScale(d.createdAt);
     })
     .attr("y", function(d) {
+      
       return chartHeight - yScale(d.y0) - yScale(d.y);
     })
     .attr("height", function(d) {
+      //console.log('d is ', JSON.stringify(d));
       return yScale(d.y);
     })
     .attr("width", 30);
 
-  svg
-    .append("g")
-    .attr("class", 'weight')
-    .style("fill", "rgb(255,255,255)")
-    .selectAll("text")
-    .data(dataSet[0])
-    .enter()
-    .append("text")
-    .text(function(d) {
-      return 'Weight: ' + d.weight;
-    })
-    .attr("x", function(d, i) {
-      return xScale(i);
-    })
-    .attr("y", function(d) {
-      return chartHeight;
-    });
+//   svg
+//     .append("g")
+//     .attr("class", 'weight')
+//     .style("fill", "rgb(255,255,255)")
+//     .selectAll("text")
+//     .data(dataSet[0])
+//     .enter()
+//     .append("text")
+//     .text(function(d) {
+//       return 'Weight: ' + d.weight;
+//     })
+//     .attr("x", function(d, i) {
+//       return xScale(i);
+//     })
+//     .attr("y", function(d) {
+//       return chartHeight;
+//     });
 
-  svg
-    .append("g")
-    .attr("class", 'reps')
-    .style("fill", "rgb(255,255,255)")
-    .selectAll("text")
-    .data(dataSet[1])
-    .enter()
-    .append("text")
-    .text(function(d) {
-      return 'Reps: ' + d.reps;
-    })
-    .attr("x", function(d, i) {
-      return xScale(i) + 75;
-    })
-    .attr("y", function(d) {
-      return chartHeight;
-    });
+//   svg
+//     .append("g")
+//     .attr("class", 'reps')
+//     .style("fill", "rgb(255,255,255)")
+//     .selectAll("text")
+//     .data(dataSet[1])
+//     .enter()
+//     .append("text")
+//     .text(function(d) {
+//       return 'Reps: ' + d.reps;
+//     })
+//     .attr("x", function(d, i) {
+//       return xScale(i) + 75;
+//     })
+//     .attr("y", function(d) {
+//       return chartHeight;
+//     });
 
 
 };
