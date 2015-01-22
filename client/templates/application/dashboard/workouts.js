@@ -60,6 +60,7 @@ Template.workouts.rendered = function() {
                     title: title,
                     exerciseId: exerciseId,
                     weight: details.weight,
+                    weightInputId: details.weightInputId,
                     createdAt: createdAt
                   };
                   var item2 = {
@@ -68,6 +69,7 @@ Template.workouts.rendered = function() {
                     title: title,
                     exerciseId: exerciseId,
                     reps: details.reps,
+                    repsInputId: details.repsInputId,
                     createdAt: createdAt
                   };
                   dataSet[0].push(item1);
@@ -140,14 +142,49 @@ Template.workouts.rendered = function() {
       return colors(i);
     });
 
+  var prevRecSep = null,
+    prevSetId = null;
+
   var rects = groups.selectAll("rect")
     .data(function(d) {
       return d;
     })
     .enter()
     .append("rect")
-    .attr("x", function(d, i) {      
-      return xScale(d.createdAt);
+    .attr("x", function(d, i) { 
+
+      var currentSetId,
+        currentSep;
+
+      //Get the set id from weight or rep
+      if(d.weightInputId) {
+        currentSetId = d.weightInputId.split("-")[1];
+      } else {
+        currentSetId = d.repsInputId.split("-")[1];
+      }
+
+      currentSep = xScale(d.createdAt);
+      //First iteration
+      if(prevSetId !== null) {
+        
+        //Date different from previous         
+        if(currentSetId !== prevSetId) {
+          //Different set but same x value
+          //means that separation should be smaller
+          if(currentSep == prevRecSep) {
+            currentSep = prevRecSep + (currentSep + prevRecSep)/8;
+          }         
+        }
+      } else {
+        //Later iterations
+        prevSetId = currentSetId;
+        currentSep = xScale(d.createdAt);
+      }
+
+      prevSetId = currentSetId;
+      prevRecSep = currentSep;
+
+      return currentSep;
     })
     .attr("y", function(d) {
       

@@ -64,13 +64,13 @@ if(Meteor.users.find({ username: username }).count() == 0) {
     title: "Workout - Fri Jan 15 2015 22:12:46 GMT-0800 (PST)",
     exercises: [{
       exerciseId: workoutExercises[2]._id,
-      exerciseInputId: "exercise-1420062818479",
+      exerciseInputId: "exercise-1420062814638",
       notes: "",
       sets: [{
         weight: "30",
-        weightInputId: "weight-1420062721054",
+        weightInputId: "weight-1420062723089",
         reps: "20",
-        repsInputId: "reps-1420062721054"
+        repsInputId: "reps-1420062723089"
       }]
     }],
     createdAt: moment("2015-01-15T06:12:46.336")
@@ -81,13 +81,13 @@ if(Meteor.users.find({ username: username }).count() == 0) {
     title: "Workout - Fri Jan 16 2015 22:12:46 GMT-0800 (PST)",
     exercises: [{
       exerciseId: workoutExercises[3]._id,
-      exerciseInputId: "exercise-1420062818479",
+      exerciseInputId: "exercise-1420062815432",
       notes: "",
       sets: [{
         weight: "45",
-        weightInputId: "weight-1420062721054",
+        weightInputId: "weight-1420062727723",
         reps: "14",
-        repsInputId: "reps-1420062721054"
+        repsInputId: "reps-1420062727723"
       }]
     }],
     createdAt: moment("2015-01-16T06:12:46.336")
