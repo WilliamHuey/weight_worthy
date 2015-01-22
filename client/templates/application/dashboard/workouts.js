@@ -19,10 +19,9 @@ Template.workouts.rendered = function() {
     var workout = rawWorkoutData[workouts];        
     //console.log('ca ', workout.createdAt);
     //if(workout.createdAt._i || workout.createdAt)
-    var createdAt = workout.createdAt._i ? 
-        new Date(workout.createdAt._i) : workout.createdAt;
+    var createdAt = typeof workout.createdAt._d !== 'undefined'? 
+        new Date(workout.createdAt._d) : workout.createdAt;
     //var createdAt = new Date(workout.createdAt._i);
-    //console.log('created at ', workout.createdAt);
     
     dates.push(createdAt);
     
@@ -169,8 +168,7 @@ Template.workouts.rendered = function() {
     .data(dataSet[0])
     .enter()
     .append("text")
-    .text(function(d) {
-      //console.log('d ', d);
+    .text(function(d) {      
       return d3.time.format('%a %d')(d.createdAt);
     })
     .attr("x", function(d, i) {
