@@ -11,8 +11,7 @@ Template.workouts.rendered = function() {
   
   var startDate = null,
       endDate = null,
-      dates = [],
-      datesForXAxis = [];
+      dates = [];
   
   //console.log('raw data ', rawWorkoutData);  
 
@@ -74,7 +73,6 @@ Template.workouts.rendered = function() {
                   };
                   dataSet[0].push(item1);
                   dataSet[1].push(item2);
-                  datesForXAxis.push(createdAt);
                   //console.log('item 1 is ', item1);
                   //console.log('2item  is ', item2);
                   setCount++;
@@ -125,7 +123,7 @@ Template.workouts.rendered = function() {
   //console.log("endDate:", endDate);
   //console.log(dates);
 
-  var xTicks = [ d3.time.day.offset(dates[0], - 2),
+  var xTicks = [ d3.time.day.offset(dates[0], - 1),
              d3.time.day.offset(dates[dates.length - 1], 1)];
   //console.log('xticks ', xTicks);
   var xScale = d3.time.scale()
@@ -133,15 +131,6 @@ Template.workouts.rendered = function() {
     .rangeRound([0, chartWidth]);
   
   //console.log('xscale ', xScale);
-
-  var xAxis = d3.svg.axis()
-    .scale(xScale)
-    .orient('bottom')
-    .ticks(d3.time.days, 1)
-    .tickValues(datesForXAxis)
-    .tickFormat(d3.time.format('%a %d'))
-    .tickSize(0)
-    .tickPadding(8)
   
   var groups = svg.selectAll("g")
     .attr('class', 'groups')    
@@ -151,10 +140,6 @@ Template.workouts.rendered = function() {
     .style("fill", function(d, i) {
       return colors(i);
     });
-
-  var xDateAxis = svg.append('g')
-    .attr('class', 'x axis') 
-    .call(xAxis) 
 
   var rects = groups.selectAll("rect")
     .data(function(d) {
@@ -175,9 +160,28 @@ Template.workouts.rendered = function() {
     })
     .attr("width", 30);
 
- 
+  var labelXTickOffset = 37; 
 
   svg
+    .append("g")
+    .attr("class", 'date')
+    .selectAll("text")    
+    .data(dataSet[0])
+    .enter()
+    .append("text")
+    .text(function(d) {
+      //console.log('d ', d);
+      return d3.time.format('%a %d')(d.createdAt);
+    })
+    .attr("x", function(d, i) {
+      return xScale(d.createdAt) + labelXTickOffset;
+    })
+    .attr("y", function(d) {
+      return 35;
+    })
+    .style("text-anchor", "end")
+
+    svg
     .append("g")
     .attr("class", 'weight')
     .selectAll("text")    
@@ -185,15 +189,17 @@ Template.workouts.rendered = function() {
     .enter()
     .append("text")
     .text(function(d) {
+      //console.log('d ', d);
       return 'Weight: ' + d.weight;
     })
     .attr("x", function(d, i) {
-      return xScale(d.createdAt);
+      return xScale(d.createdAt) + labelXTickOffset;
     })
     .attr("y", function(d) {
       return chartHeight;
     })
     .style("text-anchor", "end")
+       
        
 
   // svg
