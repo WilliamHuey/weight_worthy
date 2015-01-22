@@ -104,9 +104,11 @@ Template.workouts.rendered = function() {
 
   //console.log('datesForXAxis ', datesForXAxis);
 
+
+
   var svg = d3.select("#chart").append("svg")   
   .attr("width", totalWidth)
-  .attr("height", totalHeight)
+  .attr("height", totalHeight);
 
   var yScale = d3.scale.linear()
     .domain([0,
@@ -132,6 +134,20 @@ Template.workouts.rendered = function() {
     .rangeRound([0, chartWidth]);
   
   //console.log('xscale ', xScale);
+
+  var line = d3.svg.line()
+    .x(function(d) { return xScale(d[0]); })
+    .y(function(d) { return yScale(d[1]); })
+    .interpolate('basis');
+
+  var zoom = d3.behavior.zoom()
+    .scaleExtent([1, 1])
+    .x(xScale)
+    .on('zoom', function zoom() {     
+      svg.attr("transform", "translate(" + d3.event.translate[0] + ",0)");
+  });  
+
+  svg.call(zoom);
   
   var groups = svg.selectAll("g")
     .attr('class', 'groups')    
