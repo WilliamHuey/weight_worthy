@@ -17,12 +17,9 @@ Template.workouts.rendered = function() {
 
   for (var workouts in rawWorkoutData) {
     var workout = rawWorkoutData[workouts];        
-    //console.log('ca ', workout.createdAt);
-    //if(workout.createdAt._i || workout.createdAt)
     var createdAt = typeof workout.createdAt._d !== 'undefined'? 
         new Date(workout.createdAt._d) : workout.createdAt;
-    //var createdAt = new Date(workout.createdAt._i);
-    
+
     dates.push(createdAt);
     
     if(!startDate || createdAt < startDate)
@@ -38,7 +35,6 @@ Template.workouts.rendered = function() {
       if (typeof workout[exercises] == 'object' && 
           workout[exercises].length > 0) {
         var exercise = workout[exercises];
-        //console.log('exercise is ', exercise);
 
         for (var sets in exercise) {
           if (typeof exercise[sets] == 'object') {
@@ -51,9 +47,7 @@ Template.workouts.rendered = function() {
                 var entryDetails = set[setInfo];
                 for (var entryDetail in entryDetails) {
                   var details = entryDetails[entryDetail];
-                  //console.log('details weight ', details.weight);
-                  //console.log('created at ', workout.createdAt._i);
-                  //console.log('title ', title);
+
                   var item1 = {
                     x: setCount,
                     y: details.weight,
@@ -74,8 +68,6 @@ Template.workouts.rendered = function() {
                   };
                   dataSet[0].push(item1);
                   dataSet[1].push(item2);
-                  //console.log('item 1 is ', item1);
-                  //console.log('2item  is ', item2);
                   setCount++;
                 }
               }
@@ -86,190 +78,112 @@ Template.workouts.rendered = function() {
     }
   }
 
-  var margin = {top: 20, right: 20, bottom: 60, left: 20};
-  
-  //console.log(dates);
+  var margin = {
+    top: 20, right: 20, bottom: 60, left: 20
+  };  
 
   var $chart = $('#chart'),
-    totalWidth = $chart.width()
-    chartWidth = totalWidth,
-    totalHeight = $chart.height(),
-    chartHeight = totalHeight,
-    stack = d3.layout.stack(),
-    colors = d3.scale.category10();
-
-  stack(dataSet);
-  
-  //console.log('dataset ', JSON.stringify(dataSet));
-
-  //console.log('datesForXAxis ', datesForXAxis);
-
-
+    chartWidth = $chart.width(),
+    chartHeight = $chart.height();
 
   var svg = d3.select("#chart").append("svg")   
-  .attr("width", totalWidth)
-  .attr("height", totalHeight);
+  .attr("width", chartWidth)
+  .attr("height", chartHeight);
 
-  var yScale = d3.scale.linear()
-    .domain([0,
-      d3.max(dataSet, function(d) {
-        return d3.max(d, function(d) {
-           //console.log('d y ' +  d.y0 + " , dy " + d.y);
-          return d.y0 + d.y;
-        });
-      })
-    ])
-    .range([0, chartHeight]);
+  //Separate space evenly for height and width in svg
+  //Taking into account that the heatmap will
+  //is going to be 7 x 5 grid
+  //Extra div for the labels such as for dates and month
+  var heightDivs = Math.round(chartHeight/9),
+    widthDivs = Math.round(chartWidth/7);
 
-  //Beginning date range
-  //console.log("startDate:", startDate);
-  //console.log("endDate:", endDate);
-  //console.log(dates);
+  var heightDivFactor = 0.9
 
-  var xTicks = [ d3.time.day.offset(dates[0], - 1),
-             d3.time.day.offset(dates[dates.length - 1], 1)];
-  //console.log('xticks ', xTicks);
-  var xScale = d3.time.scale()
-    .domain(xTicks)
-    .rangeRound([0, chartWidth]);
+  //Month header
+  svg.append("text")
+    .attr("transform", 
+      "translate(" + chartWidth/7 + "," + heightDivs*heightDivFactor + ")")
+    .text(moment(new Date()).format("MMMM"));
+
+  var days = svg.append("g");
+
+  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
   
-  //console.log('xscale ', xScale);
+  //Create the rows
+  _.each(daysOfWeek, function(v,i) {
 
-  var line = d3.svg.line()
-    .x(function(d) { return xScale(d[0]); })
-    .y(function(d) { return yScale(d[1]); })
-    .interpolate('basis');
+    var xShift = (i + 2)*heightDivs*heightDivFactor;
 
-  var zoom = d3.behavior.zoom()
-    .scaleExtent([1, 1])
-    .x(xScale)
-    .on('zoom', function zoom() {     
-      svg.attr("transform", "translate(" + d3.event.translate[0] + ",0)");
-  });  
+    //Day labels on left for y-axis
+    days
+    .append("text")
+    .text(v)
+    .attr("transform", 
+      "translate(" + 25 + ", " + xShift +")");
+  });
 
-  svg.call(zoom);
-  
-  var groups = svg.selectAll("g")
-    .attr('class', 'groups')    
-    .data(dataSet)
-    .enter()
-    .append("g")
-    .style("fill", function(d, i) {
-      return colors(i);
-    });
+  //House the grid
+  var grid = svg.append("g"),
+  marginLeftWeek = 70;
 
-  var prevRecSep = null,
-    prevSetId = null;
+  _.each(daysOfWeek, function(v,i) {  
 
-  var rects = groups.selectAll("rect")
-    .data(function(d) {
-      return d;
-    })
-    .enter()
-    .append("rect")
-    .attr("x", function(d, i) { 
+    var xShift = (i + 2)*heightDivs*heightDivFactor;
 
-      var currentSetId,
-        currentSep;
+    var gridRow = grid.append("g");
 
-      //Get the set id from weight or rep
-      if(d.weightInputId) {
-        currentSetId = d.weightInputId.split("-")[1];
-      } else {
-        currentSetId = d.repsInputId.split("-")[1];
-      }
+    var dayWidth = (chartWidth/2)/15,
+    weekWidthSpace = 5;
 
-      currentSep = xScale(d.createdAt);
-      //First iteration
-      if(prevSetId !== null) {
-        
-        //Date different from previous         
-        if(currentSetId !== prevSetId) {
-          //Different set but same x value
-          //means that separation should be smaller
-          if(currentSep == prevRecSep) {
-            currentSep = prevRecSep + (currentSep + prevRecSep)/8;
-          }         
-        }
-      } else {
-        //Later iterations
-        prevSetId = currentSetId;
-        currentSep = xScale(d.createdAt);
-      }
+     gridRow
+          .append("rect")
+          .attr("width", dayWidth)
+          .attr("height", 30)
+          .attr("transform", 
+            "translate(" + marginLeftWeek + ", " + (xShift - 18) +")")
+          .style("stroke-width", 1)
+          .style("stroke", "gray")
+          .style("fill", "none");
 
-      prevSetId = currentSetId;
-      prevRecSep = currentSep;
+    var weekCount = 2;
+    while(weekCount < 6) {
 
-      return currentSep;
-    })
-    .attr("y", function(d) {
+      var laterWeeksLength = marginLeftWeek + ((weekCount - 1) * (dayWidth + weekWidthSpace));
       
-      return chartHeight - yScale(d.y0) - yScale(d.y);
-    })
-    .attr("height", function(d) {
-      //console.log('d is ', JSON.stringify(d));
-      return yScale(d.y);
-    })
-    .attr("width", 30);
+      gridRow
+        .append("rect")
+        .attr("width", dayWidth)
+        .attr("height", 30)
+        .attr("transform",
+          "translate(" + laterWeeksLength + ", " + (xShift - 18) +")")
+        .style("stroke-width", 1)
+        .style("stroke", "gray")
+        .style("fill", "none");
+      
+      weekCount++;
+    }      
 
-  var labelXTickOffset = 37; 
+  });
 
-  svg
-    .append("g")
-    .attr("class", 'date')
-    .selectAll("text")    
-    .data(dataSet[0])
-    .enter()
-    .append("text")
-    .text(function(d) {      
-      return d3.time.format('%a %d')(d.createdAt);
-    })
-    .attr("x", function(d, i) {
-      return xScale(d.createdAt) + labelXTickOffset;
-    })
-    .attr("y", function(d) {
-      return 35;
-    })
-    .style("text-anchor", "end")
 
-    svg
-    .append("g")
-    .attr("class", 'weight')
-    .selectAll("text")    
-    .data(dataSet[0])
-    .enter()
-    .append("text")
-    .text(function(d) {
-      //console.log('d ', d);
-      return 'Weight: ' + d.weight;
-    })
-    .attr("x", function(d, i) {
-      return xScale(d.createdAt) + labelXTickOffset;
-    })
-    .attr("y", function(d) {
-      return chartHeight;
-    })
-    .style("text-anchor", "end")
-       
-       
+  
+  
 
-  // svg
-  //   .append("g")
-  //   .attr("class", 'reps')
-  //   .style("fill", "rgb(255,255,255)")
-  //   .selectAll("text")
-  //   .data(dataSet[1])
-  //   .enter()
-  //   .append("text")
-  //   .text(function(d) {
-  //     return 'Reps: ' + d.reps;
-  //   })
-  //   .attr("x", function(d, i) {
-  //     return xScale(d.createdAt);
-  //   })
-  //   .attr("y", function(d) {
-  //     return chartHeight;
-  //   });
+
+
+
+
+
+
+
+
+
+
+
+  
+
+ 
 
 
 };

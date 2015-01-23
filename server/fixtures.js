@@ -21,7 +21,7 @@ if (Exercises.find().count() === 0) {
 var username = password = "anewone";
 if(Meteor.users.find({ username: username }).count() == 0) {
   
-  var workoutExercises = Exercises.find({}, { limit: 4 }).fetch();  
+  var workoutExercises = Exercises.find({}, { limit: 6 }).fetch();  
   
   var userId = Accounts.createUser({
     username: username,
@@ -57,7 +57,42 @@ if(Meteor.users.find({ username: username }).count() == 0) {
     createdAt: moment("2015-01-13T06:12:46.336")
   });
 
-    
+  Workouts.insert({
+    userId: userId,
+    title: "Workout - Tue Jan 14 2015 22:12:46 GMT-0800 (PST)",
+    exercises: [{
+      exerciseId: workoutExercises[3]._id,
+      exerciseInputId: "exercise-1420062718479",
+      notes: "",
+      sets: [{
+        weight: "34",
+        weightInputId: "weight-1420068419254",
+        reps: "20",
+        repsInputId: "reps-1420068419254"
+      }]
+    }, {
+      exerciseId: workoutExercises[5]._id,
+      exerciseInputId: "exercise-1420096166982",      
+      notes: "",
+      sets: [{
+        weight: "11",
+        weightInputId: "weight-1420079697253",        
+        reps: "9",
+        repsInputId: "reps-1420079697253"
+      }, {
+        weight: "15",
+        weightInputId: "weight-1420079697253",        
+        reps: "21",
+        repsInputId: "reps-1420079697253"
+      }, {
+        weight: "6",
+        weightInputId: "weight-1420001849722",        
+        reps: "20",
+        repsInputId: "reps-1420001849722"
+      }]
+    }],
+    createdAt: moment("2015-01-14T06:12:46.336")
+  });    
 
   Workouts.insert({
     userId: userId,
