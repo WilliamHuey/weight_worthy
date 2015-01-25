@@ -107,7 +107,7 @@ Template.workouts.rendered = function() {
 
   var days = svg.append("g");
 
-  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   
   //Create the rows
@@ -124,29 +124,20 @@ Template.workouts.rendered = function() {
   });
 
   //House the grid
-  var grid = svg.append("g"),
+  var grid = svg.append("g").attr("class", "days"),
   marginLeftWeek = 70;
 
+  //Five rows for each day of week
   _.each(daysOfWeek, function(v,i) {  
 
     var xShift = (i + 2)*heightDivs*heightDivFactor;
 
-    var gridRow = grid.append("g");
+    var gridRow = grid.append("g").attr("class", daysOfWeek[i]);
 
     var dayWidth = (chartWidth/2)/15,
     weekWidthSpace = 5;
 
-     gridRow
-          .append("rect")
-          .attr("width", dayWidth)
-          .attr("height", 30)
-          .attr("transform", 
-            "translate(" + marginLeftWeek + ", " + (xShift - 18) +")")
-          .style("stroke-width", 1)
-          .style("stroke", "gray")
-          .style("fill", "none");
-
-    var weekCount = 2;
+    var weekCount = 1;
     while(weekCount < 6) {
 
       var laterWeeksLength = marginLeftWeek + ((weekCount - 1) * (dayWidth + weekWidthSpace));
@@ -166,8 +157,35 @@ Template.workouts.rendered = function() {
 
   });
 
+  //Get name of the first day of month from given date of month
 
-  
+  var currentDate = new Date();
+
+  var dayOfMonth = moment(currentDate).format('DD');
+
+  var firstDateOfMonth = moment()
+    .subtract(dayOfMonth - 1, 'days')
+    .calendar();
+
+  var nameFirstDayOfMonth = moment(new Date(firstDateOfMonth))
+    .format('ddd');
+
+  var startRow = daysOfWeek.indexOf(nameFirstDayOfMonth);
+
+  var lastDayOfMonth = moment(currentDate).endOf('month');
+
+  var numDaysInMonth = lastDayOfMonth.format('DD');
+
+  //Hide the beginning days
+  $('g.days g:lt(' + startRow +')').each(function() {
+    $(this).children().first().hide();
+  });
+
+  //Hide the ending days
+  $('g.days g:gt(' + (35 - numDaysInMonth) +')').each(function() {
+    console.log($(this).children().last());
+    $(this).children().last().hide();
+  });
   
 
 
