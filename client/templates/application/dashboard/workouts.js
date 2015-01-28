@@ -78,8 +78,7 @@ Template.workouts.rendered = function() {
     }
   }
 
-  //console.log(moment(dataSet[0][0].createdAt).format("YYYY"));
-
+  
   var margin = {
     top: 20, right: 20, bottom: 60, left: 20
   };  
@@ -105,9 +104,11 @@ Template.workouts.rendered = function() {
   svg.append("text")
     .attr("transform", 
       "translate(" + chartWidth/7 + "," + heightDivs*heightDivFactor + ")")
-    .text(moment(todaysDate).format("MMMM"));
+    .text(moment(todaysDate).format("MMMM"))
+    .style("font-weight", 900)
+    .style("font-size", '125%');
 
-  var days = svg.append("g"),
+  var days = svg.append("g").attr("class", "name-of-days"),
     daysOfWeek = ["Sun", "Mon", "Tue", 
     "Wed", "Thu", "Fri", "Sat"];
 
@@ -120,8 +121,8 @@ Template.workouts.rendered = function() {
     days
     .append("text")
     .text(v)
-    .attr("transform", 
-      "translate(" + 25 + ", " + xShift +")");
+    .attr("transform", "translate(" + 25 + ", " + xShift +")");
+
   });
 
   //Use today as a reference point for what month to display
@@ -136,8 +137,8 @@ Template.workouts.rendered = function() {
 
   //House the grid
   var grid = svg.append("g").attr("class", "days"),
-  marginLeftWeek = 70,
-  dayStartCount = 1;
+    marginLeftWeek = 70,
+    dayStartCount = 1;
 
   //Five rows for each day of week
   _.each(daysOfWeek, function(v,i) {  
@@ -170,14 +171,12 @@ Template.workouts.rendered = function() {
         .style("stroke", "gray")
         .style("fill", "none")
         .attr("class", (currentMonth + " " + currentYear))
-        .attr("data-day", (dayStartCount + (dayInc*7)));
+        .attr("data-day", (dayStartCount + (dayInc * 7)));
 
       dayInc++;        
       weekCount++;
     }
-
     dayStartCount++      
-
   });
 
   //Get name of the first day of month from given date of month
@@ -222,8 +221,30 @@ Template.workouts.rendered = function() {
     });
   }
 
+  //Change the numbering of days
+  //if the start of the month does not start 
+  //on a Sunday
+  if(startRow != 0) {
+    $gDaysChildren.each(function() {
+      $(this).children().each(function() {
+        var newDay = $(this).data("day");
+        $(this).attr("data-day", (newDay - startRow));
+      });
+    });
+  }
 
+//console.log(dataSet[0]);
+//console.log(moment(dataSet[0][0].createdAt).format("YYYY"));
 
+  for(var i = 0; i < dataSet[0].length; i++) {
+    var dateOfWorkout = dataSet[0][i].createdAt,
+      mDateOfWorkout = moment(dateOfWorkout);
+
+    $('rect[data-day=' + mDateOfWorkout.format("D") 
+      + "]" + "." + 
+      mDateOfWorkout.format("MMM") + "." + 
+      mDateOfWorkout.format("YYYY")).css({ "fill": "#c8c8c8"});
+  }
 
 
 
