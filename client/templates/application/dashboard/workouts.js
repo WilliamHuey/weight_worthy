@@ -78,6 +78,8 @@ Template.workouts.rendered = function() {
     }
   }
 
+  //console.log(moment(dataSet[0][0].createdAt).format("YYYY"));
+
   var margin = {
     top: 20, right: 20, bottom: 60, left: 20
   };  
@@ -95,9 +97,8 @@ Template.workouts.rendered = function() {
   //is going to be 7 x 5 grid
   //Extra div for the labels such as for dates and month
   var heightDivs = Math.round(chartHeight/9),
-    widthDivs = Math.round(chartWidth/7);
-
-  var heightDivFactor = 0.9
+    widthDivs = Math.round(chartWidth/7),
+    heightDivFactor = 0.9
 
   //Month header
   svg.append("text")
@@ -105,15 +106,14 @@ Template.workouts.rendered = function() {
       "translate(" + chartWidth/7 + "," + heightDivs*heightDivFactor + ")")
     .text(moment(new Date()).format("MMMM"));
 
-  var days = svg.append("g");
+  var days = svg.append("g"),
+    daysOfWeek = ["Sun", "Mon", "Tue", 
+    "Wed", "Thu", "Fri", "Sat"];
 
-  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  
   //Create the rows
   _.each(daysOfWeek, function(v,i) {
 
-    var xShift = (i + 2)*heightDivs*heightDivFactor;
+    var xShift = (i + 2) * heightDivs * heightDivFactor;
 
     //Day labels on left for y-axis
     days
@@ -123,71 +123,103 @@ Template.workouts.rendered = function() {
       "translate(" + 25 + ", " + xShift +")");
   });
 
+  //Use today as a reference point for what month to display
+  //on the month
+  var currentDate = moment(new Date()),
+    currentYear = moment(currentDate).format("YYYY"),
+    currentMonth = moment(currentDate).format("MMM");
+
+ // console.log('current date ', currentDate);
+  //console.log('currentYear ', currentYear);
+  //console.log('currentMonth ', currentMonth);
+
   //House the grid
   var grid = svg.append("g").attr("class", "days"),
-  marginLeftWeek = 70;
+  marginLeftWeek = 70,
+  dayStartCount = 1;
 
   //Five rows for each day of week
   _.each(daysOfWeek, function(v,i) {  
 
-    var xShift = (i + 2)*heightDivs*heightDivFactor;
+    var xShift = (i + 2) * heightDivs * heightDivFactor;
 
-    var gridRow = grid.append("g").attr("class", daysOfWeek[i]);
+    var gridRow = grid.append("g")
+      .attr("class", daysOfWeek[i]);
 
     var dayWidth = (chartWidth/2)/15,
-    weekWidthSpace = 5;
+      weekWidthSpace = 5,
+      weekCount = 1,
+      dayInc = 0;
 
-    var weekCount = 1;
+    //Create each day for a given day of week 
+    //(ex. all days for Sunday)
     while(weekCount < 6) {
 
-      var laterWeeksLength = marginLeftWeek + ((weekCount - 1) * (dayWidth + weekWidthSpace));
+      var laterWeeksLength = marginLeftWeek + 
+        ((weekCount - 1) * (dayWidth + weekWidthSpace));
       
       gridRow
         .append("rect")
         .attr("width", dayWidth)
         .attr("height", 30)
         .attr("transform",
-          "translate(" + laterWeeksLength + ", " + (xShift - 18) +")")
+          "translate(" + laterWeeksLength + 
+            ", " + (xShift - 18) +")")
         .style("stroke-width", 1)
         .style("stroke", "gray")
-        .style("fill", "none");
-      
+        .style("fill", "none")
+        .attr("class", (currentMonth + " " + currentYear))
+        .attr("data-day", (dayStartCount + (dayInc*7)));
+
+      dayInc++;        
       weekCount++;
-    }      
+    }
+
+    dayStartCount++      
 
   });
 
   //Get name of the first day of month from given date of month
+  var dayOfMonth = moment(currentDate).format('DD'),
+    firstDateOfMonth = moment(currentDate)
+      .subtract(dayOfMonth - 1, 'days');
 
-  var currentDate = new Date();
-
-  var dayOfMonth = moment(currentDate).format('DD');
-
-  var firstDateOfMonth = moment()
-    .subtract(dayOfMonth - 1, 'days')
-    .calendar();
-
-  var nameFirstDayOfMonth = moment(new Date(firstDateOfMonth))
+  var nameFirstDayOfMonth = moment(firstDateOfMonth)
     .format('ddd');
 
-  var startRow = daysOfWeek.indexOf(nameFirstDayOfMonth);
+  var startRow = daysOfWeek.indexOf(nameFirstDayOfMonth),
+    lastDayOfMonth = moment(currentDate).endOf('month'),
+    nameOfLastDayOfMonth = lastDayOfMonth.format("ddd"),
+    endRow = daysOfWeek.indexOf(nameOfLastDayOfMonth),
+    numDaysInMonth = lastDayOfMonth.format('DD');
+ 
+  var $gDays = $('g.days'),
+    $gDaysChildren = $gDays.children();
 
-  var lastDayOfMonth = moment(currentDate).endOf('month');
+  //Hide the beginning days only if first day of
+  //month does not start on a Sunday
+  if(startRow != 0) {
+    $gDaysChildren.slice(0,startRow)
+    .each(function() {
+      $(this).children().first().hide();
+    });
+  }
 
-  var numDaysInMonth = lastDayOfMonth.format('DD');
+  //Hide the ending days only if the last days
+  //does not land on a Sat or the month is Feb
+  var diffEndDays = 35 - numDaysInMonth;  
 
-  //Hide the beginning days
-  $('g.days g:lt(' + startRow +')').each(function() {
-    $(this).children().first().hide();
-  });
-
-  //Hide the ending days
-  $('g.days g:gt(' + (35 - numDaysInMonth) +')').each(function() {
-    console.log($(this).children().last());
-    $(this).children().last().hide();
-  });
-  
-
+  if(((numDaysInMonth > 28) && (endRow != 6))) {
+    $gDaysChildren.slice(endRow + 1, 7)
+      .each(function() {
+        $(this).children().last().hide();
+    });
+  } else if(!(numDaysInMonth > 28)){
+    $gDaysChildren.slice(0, 7)
+      .each(function() {
+        $(this).children().last().hide();
+    });
+  }
 
 
 
