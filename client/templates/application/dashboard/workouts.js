@@ -98,13 +98,14 @@ Template.workouts.rendered = function() {
   //Extra div for the labels such as for dates and month
   var heightDivs = Math.round(chartHeight/9),
     widthDivs = Math.round(chartWidth/7),
-    heightDivFactor = 0.9
+    heightDivFactor = 0.9,
+    todaysDate = new Date();
 
   //Month header
   svg.append("text")
     .attr("transform", 
       "translate(" + chartWidth/7 + "," + heightDivs*heightDivFactor + ")")
-    .text(moment(new Date()).format("MMMM"));
+    .text(moment(todaysDate).format("MMMM"));
 
   var days = svg.append("g"),
     daysOfWeek = ["Sun", "Mon", "Tue", 
@@ -125,7 +126,7 @@ Template.workouts.rendered = function() {
 
   //Use today as a reference point for what month to display
   //on the month
-  var currentDate = moment(new Date()),
+  var currentDate = moment(todaysDate),
     currentYear = moment(currentDate).format("YYYY"),
     currentMonth = moment(currentDate).format("MMM");
 
