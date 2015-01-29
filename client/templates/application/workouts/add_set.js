@@ -18,9 +18,7 @@ Template.addSet.events({
     e.preventDefault();
     Blaze.renderWithData(
       Template.addSet,
-      {
-        uniqueId: (new Date()).getTime()
-      },
+      WeightWorthy.uniqueIdData,
       $(e.target).parents('.sets').get(0)
     );
   },

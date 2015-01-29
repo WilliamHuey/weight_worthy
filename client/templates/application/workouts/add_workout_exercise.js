@@ -4,9 +4,7 @@ Template.addWorkoutExercise.events({
    
     Blaze.renderWithData(
       Template.addWorkoutExercise,
-      {
-        uniqueId: (new Date()).getTime()
-      },
+      WeightWorthy.uniqueIdData,
       $('#exercises-area').get(0)
     );
 
