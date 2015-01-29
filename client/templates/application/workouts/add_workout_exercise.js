@@ -2,8 +2,11 @@ Template.addWorkoutExercise.events({
   'click .add-exercise': function(e) {
     e.preventDefault();
    
-    Blaze.render(
-      Template.addWorkoutExercise,      
+    Blaze.renderWithData(
+      Template.addWorkoutExercise,
+      {
+        uniqueId: (new Date()).getTime()
+      },
       $('#exercises-area').get(0)
     );
 
