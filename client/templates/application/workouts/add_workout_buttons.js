@@ -83,22 +83,19 @@ Template.addWorkoutButtons.events({
     e.preventDefault();
 
     //Toggle on with multiple exercises
-    if($('#exercises-area').children().length > 1) {
-       var button = $(e.target),
+    var button = $(e.target),
         glyphText = button.find('span.glyphicon');
       
-      button.toggleClass('btn-primary')
-            .toggleClass('btn-danger');
-      glyphText.toggleClass('glyphicon-plus')
-               .toggleClass('glyphicon-minus');
-      
-      $('.exercise-buttons')
-        .children('button')
-        .toggleClass('hidden');
+    button.toggleClass('btn-primary')
+      .toggleClass('btn-danger');
+    glyphText.toggleClass('glyphicon-plus')
+      .toggleClass('glyphicon-minus');
 
-      $('.set-btn').toggleClass('hidden');
-    }
+    $('.exercise-buttons')
+      .children('button')
+      .toggleClass('hidden');
 
+    $('.set-btn').toggleClass('hidden');
    
   }
 });
