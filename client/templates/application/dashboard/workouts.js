@@ -11,7 +11,9 @@ Template.workouts.rendered = function() {
   
   var startDate = null,
       endDate = null,
-      dates = [];
+      dates = [],
+      //Counting the exercises per one date
+      datesCount = {};
   
   //console.log('raw data ', rawWorkoutData);  
 
@@ -20,7 +22,10 @@ Template.workouts.rendered = function() {
     var createdAt = typeof workout.createdAt._d !== 'undefined'? 
         new Date(workout.createdAt._d) : workout.createdAt;
 
-    dates.push(createdAt);
+    var uniqDate = moment(createdAt).format("MMM-DDD-YYYY");
+
+    if(dates.indexOf(uniqDate) == -1)
+      dates.push(uniqDate);      
     
     if(!startDate || createdAt < startDate)
       startDate = createdAt;
@@ -66,6 +71,13 @@ Template.workouts.rendered = function() {
                     repsInputId: details.repsInputId,
                     createdAt: createdAt
                   };
+
+                  if(typeof datesCount[uniqDate] == 'undefined') {
+                    datesCount[uniqDate] = 1;
+                  } else {
+                    datesCount[uniqDate] += 1;
+                  }  
+
                   dataSet[0].push(item1);
                   dataSet[1].push(item2);
                   setCount++;
@@ -78,7 +90,6 @@ Template.workouts.rendered = function() {
     }
   }
 
-  
   var margin = {
     top: 20, right: 20, bottom: 60, left: 20
   };  
@@ -88,8 +99,8 @@ Template.workouts.rendered = function() {
     chartHeight = $chart.height();
 
   var svg = d3.select("#chart").append("svg")   
-  .attr("width", chartWidth)
-  .attr("height", chartHeight);
+    .attr("width", chartWidth)
+    .attr("height", chartHeight);
 
   //Separate space evenly for height and width in svg
   //Taking into account that the heatmap will
@@ -135,12 +146,68 @@ Template.workouts.rendered = function() {
   //console.log('currentYear ', currentYear);
   //console.log('currentMonth ', currentMonth);
 
-  //House the grid
+  //House the days grid
   var grid = svg.append("g").attr("class", "days"),
     marginLeftWeek = 70,
     dayStartCount = 1;
 
-  //Five rows for each day of week
+  //Tooltip when hovering over the days in the heatmap
+  var toolTipDiv = d3.select("body").append("div")   
+    .attr("class", "tooltip")               
+    .style("opacity", 0);
+
+  var attachToolTip = function(ele) {
+    var $ele = $(ele[0]);
+
+    ele.on("mouseover", function(d) {     
+      toolTipDiv.transition()        
+        .duration(100)      
+        .style("opacity", .9);  
+    
+      //Use data attributes to get 
+      //different exercises and day of month      
+      
+      var day = $ele.attr("data-day"),
+        dayEnding = $ele.attr("data-dayEnding"),
+        exerciseCount = $ele.data("exercises");
+
+      var exerciseWord;
+      //console.log('dayEnding ', dayEnding);
+      if(exerciseCount > 1) {
+        exerciseWord = 'exercises';
+      } else {
+        exerciseWord = 'exercise';
+      }
+
+      //Day where no workouts were committed
+      if(typeof exerciseCount == 'undefined') {
+        exerciseCount = 0;
+        var eleClass = $ele.attr("class"),
+          eleMonthYear = eleClass.split(" "),
+          eleDate = eleMonthYear[0] + '/' + day + '/' + eleMonthYear[1],
+          dayEnding = moment(new Date(eleDate)).format('Do').slice(-2);
+      }
+
+      //Create the message for the tooltip
+      var toolTipMsg = ['<span>', exerciseCount, 
+        exerciseWord, 'done on the', (day + dayEnding), 
+        '</span>'].join(" ");        
+        
+      //Position the tooltip near the element 
+      //being mousedover  
+      toolTipDiv.html(toolTipMsg)  
+        .style("left", (d3.event.pageX) + "px")     
+        .style("top", (d3.event.pageY - 28) + "px");    
+      })        
+
+     ele.on("mouseout", function(d) {       
+      toolTipDiv.transition()        
+        .duration(300)      
+        .style("opacity", 0);   
+    });
+  };  
+
+  //Five rows for each week of the month
   _.each(daysOfWeek, function(v,i) {  
 
     var xShift = (i + 2) * heightDivs * heightDivFactor;
@@ -160,7 +227,7 @@ Template.workouts.rendered = function() {
       var laterWeeksLength = marginLeftWeek + 
         ((weekCount - 1) * (dayWidth + weekWidthSpace));
       
-      gridRow
+      var dayRect = gridRow
         .append("rect")
         .attr("width", dayWidth)
         .attr("height", 30)
@@ -169,9 +236,12 @@ Template.workouts.rendered = function() {
             ", " + (xShift - 18) +")")
         .style("stroke-width", 1)
         .style("stroke", "gray")
-        .style("fill", "none")
+        .style("fill", "transparent")
         .attr("class", (currentMonth + " " + currentYear))
         .attr("data-day", (dayStartCount + (dayInc * 7)));
+
+      //Event listener attachment for each day
+      attachToolTip(dayRect);
 
       dayInc++;        
       weekCount++;
@@ -233,18 +303,28 @@ Template.workouts.rendered = function() {
     });
   }
 
-//console.log(dataSet[0]);
-//console.log(moment(dataSet[0][0].createdAt).format("YYYY"));
-
+  //Highlight the individual days where workouts occurred
+  //Adding the day and exercise count as using the data attr
   for(var i = 0; i < dataSet[0].length; i++) {
     var dateOfWorkout = dataSet[0][i].createdAt,
       mDateOfWorkout = moment(dateOfWorkout);
 
-    $('rect[data-day=' + mDateOfWorkout.format("D") 
-      + "]" + "." + 
-      mDateOfWorkout.format("MMM") + "." + 
-      mDateOfWorkout.format("YYYY")).css({ "fill": "#c8c8c8"});
+    var rectDay = mDateOfWorkout.format("D"),
+      rectDayEnding = mDateOfWorkout.format("Do").slice(-2),
+      rectMonth = mDateOfWorkout.format("MMM"),
+      rectYear = mDateOfWorkout.format("YYYY"),
+      rectDate = rectMonth + "-" + rectDay + "-" + rectYear,
+      excercisesCount = datesCount[rectDate];
+
+    $('rect[data-day=' + rectDay
+      + "]" + "." + rectMonth
+       + "." + rectYear)
+    .css({ "fill": "#c8c8c8"})
+    .attr("data-exercises", excercisesCount)
+    .attr("data-dayEnding", rectDayEnding);
   }
+
+
 
 
 
