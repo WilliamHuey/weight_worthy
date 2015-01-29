@@ -205,7 +205,10 @@ Template.workouts.rendered = function() {
         .duration(300)      
         .style("opacity", 0);   
     });
-  };  
+  };
+
+  var rowMarkerHeight = 0,
+    gridDayheight = 30; 
 
   //Five rows for each week of the month
   _.each(daysOfWeek, function(v,i) {  
@@ -230,7 +233,7 @@ Template.workouts.rendered = function() {
       var dayRect = gridRow
         .append("rect")
         .attr("width", dayWidth)
-        .attr("height", 30)
+        .attr("height", gridDayheight)
         .attr("transform",
           "translate(" + laterWeeksLength + 
             ", " + (xShift - 18) +")")
@@ -246,8 +249,19 @@ Template.workouts.rendered = function() {
       dayInc++;        
       weekCount++;
     }
+
+    rowMarkerHeight = (xShift - 18);
+
     dayStartCount++      
   });
+
+  //Year label
+  svg.append("text")
+    .attr("transform", 
+      "translate(" + chartWidth/7 + "," + (rowMarkerHeight + gridDayheight + 30) + ")")
+    .text(moment(todaysDate).format("YYYY"))
+    .style("font-weight", 900)
+    .style("font-size", '125%');
 
   //Get name of the first day of month from given date of month
   var dayOfMonth = moment(currentDate).format('DD'),
@@ -303,6 +317,11 @@ Template.workouts.rendered = function() {
     });
   }
 
+  //Heatmap color gradiations
+  var heatMapColors = ['#b2e2e2', 
+    '#66c2a4', '#2ca25f', '#006d2c'],
+    heatMapLevels = [1, 2, 3, 4];
+
   //Highlight the individual days where workouts occurred
   //Adding the day and exercise count as using the data attr
   for(var i = 0; i < dataSet[0].length; i++) {
@@ -314,12 +333,13 @@ Template.workouts.rendered = function() {
       rectMonth = mDateOfWorkout.format("MMM"),
       rectYear = mDateOfWorkout.format("YYYY"),
       rectDate = rectMonth + "-" + rectDay + "-" + rectYear,
-      excercisesCount = datesCount[rectDate];
+      excercisesCount = datesCount[rectDate],
+      rectColor = heatMapColors[heatMapLevels.indexOf(excercisesCount)];
 
     $('rect[data-day=' + rectDay
       + "]" + "." + rectMonth
        + "." + rectYear)
-    .css({ "fill": "#c8c8c8"})
+    .css({ "fill": rectColor})
     .attr("data-exercises", excercisesCount)
     .attr("data-dayEnding", rectDayEnding);
   }
