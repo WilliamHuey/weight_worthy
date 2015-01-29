@@ -7,10 +7,15 @@
   li
     a
       display block
-      padding-left 2em
+      padding 0.8em 0em 0.8em 2em
+      &:hover
+        background-color teal
+        text-decoration none
+        color white
+        font-weight 900
 
 /******************************
-  Dashboard Right
+  Right Sidebar
 *******************************/
 
 #dashboard-content-bottom
@@ -20,6 +25,38 @@
   h1
     font-size 150%
     margin 0.2em 0em
+
+.padding-left
+  padding-left 2em
+
+.padding-top-bottom     
+  padding-top 1em
+  padding-bottom 1em
+
+
+/******************************
+******************************
+  Dashboard Right
+******************************  
+*******************************/
+
+
+/******************************
+  Profile
+*******************************/
+
+form.profile
+  padding-right 2em
+  padding-top 1.5em
+  .form-group
+    padding-bottom 1.5em
+  label
+    min-width 80px
+
+
+/******************************
+  Workouts
+*******************************/
 
 #chart
   height 350px
