@@ -15,7 +15,7 @@ Template.workouts.rendered = function() {
       //Counting the exercises per one date
       datesCount = {};
   
-  //console.log('raw data ', rawWorkoutData);  
+  //console.log('raw data ', rawWorkoutData);
 
   for (var workouts in rawWorkoutData) {
     var workout = rawWorkoutData[workouts];        
@@ -198,7 +198,7 @@ Template.workouts.rendered = function() {
       toolTipDiv.html(toolTipMsg)  
         .style("left", (d3.event.pageX) + "px")     
         .style("top", (d3.event.pageY - 28) + "px");    
-      })        
+      });
 
      ele.on("mouseout", function(d) {       
       toolTipDiv.transition()        
@@ -252,7 +252,7 @@ Template.workouts.rendered = function() {
 
     rowMarkerHeight = (xShift - 18);
 
-    dayStartCount++      
+    dayStartCount++;     
   });
 
   //Year label
@@ -343,19 +343,5 @@ Template.workouts.rendered = function() {
     .attr("data-exercises", excercisesCount)
     .attr("data-dayEnding", rectDayEnding);
   }
-
-
-
-
-
-
-
-
-
-
   
-
- 
-
-
 };
