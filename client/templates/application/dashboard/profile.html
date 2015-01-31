@@ -7,17 +7,35 @@
           <input id="name" class="form-control" name="name" type="text" />
         </div>
         <div class="form-group block">
-          <label>Age</label>
-          <input id="Age" class="form-control" name="Age" type="text" />
+          <label>Birthday</label>
+          <input id="birthday-month" class="form-control" name="birthday-month" type="text" placeholder="MMM" /> - 
+          <input id="birthday-day" class="form-control" name="birthday-day" type="text" placeholder="DD" /> - 
+          <input id="birthday-year" class="form-control" name="birthday-year" type="text" placeholder="YYYY" />
         </div>
         <div class="form-group block">
           <label>Weight</label>
-          <input id="name" class="form-control" name="weight" type="text" />
-        </div>     
+          <input id="weight" class="form-control" name="weight" type="text" />
+          <select id="profile-weight" class="form-control">
+            <option value="pounds">Pound</option>
+            <option value="kilograms">kilograms</option>
+          </select>
+        </div>
+        <div class="form-group block">
+          <label>Gender</label>
+          <select id="profile-gender" class="form-control">
+            <option value="">&nbsp;</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+        <div class="form-group block">
+          <label>Location</label>
+          <input id="location" class="form-control" name="location" type="text" />
+        </div>        
       </form>
     </div>
     <div class="row no-margins padding-left">
-      <button class="btn btn-primary">Save</button>
+      <button id="save-profile" class="btn btn-primary">Save</button>
     </div>
   </div>
 </template>
