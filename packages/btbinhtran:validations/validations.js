@@ -16,7 +16,7 @@ Val.validate = (function() {
       lengthGreater: function() {
         return dataType + ' length is not greater than ' + againstValue + '.';
       },
-      within: function() {
+      within: function() {        
         return dataType + ' not found in select choices: ' + againstValue + '.';
       }
     },
@@ -27,7 +27,7 @@ Val.validate = (function() {
     },
     number: {
       //Generate the message for a specific attribute rule
-      greaterThan: function() {
+      greaterThan: function() {       
         return dataType + ' is not greater than ' + againstValue + '.';
       },
       greaterThanEqualTo: function() {
@@ -56,7 +56,7 @@ Val.validate = (function() {
         return inputData > againstValue;
       },
       within: function() {
-        return againstValue.indexOf(inputData) == -1;
+        return againstValue.indexOf(inputData) != -1;
       }
     },
     is: {
