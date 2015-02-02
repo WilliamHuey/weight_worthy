@@ -1,11 +1,13 @@
 Template.dashboard.rendered = function() {
 
+  var templateName = "Profile";
+
   Blaze.render(
-    Template.workouts,
+    Template[templateName.toLowerCase()],
     $('#dashboard-content').get(0)
   )  
 
-  $('#dashboard-heading h1').text('Workouts');
+  $('#dashboard-heading h1').text(templateName);
 }
 
 Template.dashboard.events({

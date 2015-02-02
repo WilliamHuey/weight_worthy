@@ -9,6 +9,17 @@ Val.validate = (function() {
   //Determine which message type should be used
   //These messages are in the negative because there are errors
   var validationMessage = {
+    string: {
+      isTrue: function() {
+        return dataType + ' is not a string.';
+      },
+      lengthGreater: function() {
+        return dataType + ' length is not greater than ' + againstValue + '.';
+      },
+      within: function() {
+        return dataType + ' not found in select choices: ' + againstValue + '.';
+      }
+    },
     is: {
       notEmpty: function() {
         return dataType + ' is empty.';
@@ -37,6 +48,17 @@ Val.validate = (function() {
   //Validation patterns
   //Passed-in data are compared against the desired value (againstValue)
   var validationDefinitions = {
+    string: {
+      isTrue: function() {        
+        return _.isString(inputData);
+      },
+      lengthGreater: function() {
+        return inputData > againstValue;
+      },
+      within: function() {
+        return againstValue.indexOf(inputData) == -1;
+      }
+    },
     is: {
       notEmpty: function() {
         return !_.isEmpty(inputData);
